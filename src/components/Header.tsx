@@ -1,0 +1,234 @@
+import React, { useState, useEffect } from 'react';
+import { Moon, Sun, Menu, X, Shield } from 'lucide-react';
+import { TextSizeLevel } from '../types';
+
+interface HeaderProps {
+  isDarkMode: boolean;
+  setIsDarkMode: (dark: boolean) => void;
+  textSize: TextSizeLevel;
+  setTextSize: (level: TextSizeLevel) => void;
+  onOpenAdmin: () => void;
+  onOpenPrayerModal: () => void;
+  onOpenGiveModal: () => void;
+  onOpenGetStarted: () => void;
+  activeSection: string;
+  onNavigate: (sectionId: string) => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  isDarkMode,
+  setIsDarkMode,
+  textSize,
+  setTextSize,
+  onOpenAdmin,
+  onOpenPrayerModal,
+  onOpenGiveModal,
+  onOpenGetStarted,
+  activeSection,
+  onNavigate
+}) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoClickCount, setLogoClickCount] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 15);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogoClick = () => {
+    setLogoClickCount(prev => {
+      const next = prev + 1;
+      if (next >= 5) {
+        onOpenAdmin();
+        return 0;
+      }
+      return next;
+    });
+    setTimeout(() => setLogoClickCount(0), 2500);
+  };
+
+  const navLinks = [
+    { href: '#homeSection', label: 'Home', id: 'homeSection' },
+    { href: '#aboutSection', label: 'About', id: 'aboutSection' },
+    { href: '#eventsSection', label: 'Events', id: 'eventsSection' },
+    { href: '#sermonsSection', label: 'Sermons', id: 'sermonsSection' },
+    { href: '#prayerSection', label: 'Prayer', id: 'prayerSection' },
+    { href: '#contactSection', label: 'Contact', id: 'contactSection' }
+  ];
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    onNavigate(sectionId);
+    const elem = document.getElementById(sectionId);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <header
+      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full border border-indigo-400 ${
+        isDarkMode ? 'border-white/10' : 'border-indigo-400'
+      } ${
+        isScrolled
+          ? `py-3 px-8 ${isDarkMode ? 'bg-black/80 border-white/15' : 'bg-white/95 border-indigo-400'}`
+          : `py-3 px-8 ${isDarkMode ? 'bg-white/5' : 'bg-white/80'}`
+      }`}
+      role="banner"
+    >
+      <div className="flex items-center justify-between gap-4">
+        {/* Brand & Logo */}
+        <div className="flex items-center gap-3">
+          <div
+            onClick={handleLogoClick}
+            className="cursor-pointer group relative flex-shrink-0"
+            title="Click 5 times for Admin Access"
+          >
+            <div className="w-15 h-15 sm:w-15 sm:h-15 rounded-full overflow-hidden border border-indigo-300 dark:border-indigo-400/50 shadow-md bg-indigo-50 dark:bg-black/60 flex items-center justify-center">
+              <img 
+                src="/image.png" 
+                alt="Gospel Fellowship Church Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {logoClickCount > 0 && (
+              <span className="absolute -bottom-1 -right-1 bg-indigo-500 text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
+                {logoClickCount}/5
+              </span>
+            )}
+          </div>
+
+          <a
+            href="#homeSection"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate('homeSection');
+              document.getElementById('homeSection')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex flex-col group"
+          >
+            <span className="text-lg sm:text-2xl font-serif tracking-tight text-black dark:text-white">
+              Gospel <span className="text-indigo-500 dark:text-indigo-400">Fellowship</span> Church
+            </span>
+          </a>
+        </div>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-8 p-1.5 px-6 rounded-full border border-none">
+          {navLinks.map(link => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.id)}
+                className={`relative text-sm font-medium py-1 transition-colors duration-300 ${
+                  isActive
+                    ? 'text-indigo-600 dark:text-indigo-400 font-bold'
+                    : 'text-gray-600 dark:text-[#A1A1A1] hover:text-indigo-500 dark:hover:text-indigo-400'
+                }`}
+              >
+                {link.label}
+                
+                {/* Animated Underline - Active only */}
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-indigo-500 dark:bg-indigo-400 transition-all duration-300 ease-out ${
+                    isActive ? 'w-full' : 'w-0'
+                  }`}
+                />
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-2">
+          {/* Dark Mode Toggle Button */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="hidden sm:flex px-3 py-1.5 bg-gray-100 dark:bg-white/10 rounded-full items-center gap-2 border border-gray-200 dark:border-white/10 min-h-[38px]"
+            aria-label="Toggle dark mode"
+          >
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-black dark:text-indigo-400">
+              {isDarkMode ? 'Dark Mode' : 'Light Mode'}
+            </span>
+            {isDarkMode ? <Sun className="w-3.5 h-3.5 text-indigo-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
+          </button>
+
+          {/* Admin Direct Button */}
+          <button
+            onClick={onOpenAdmin}
+            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-[#A1A1A1] font-medium text-xs border border-gray-200 dark:border-white/10 flex items-center gap-1 min-h-[38px]"
+            title="Admin Dashboard"
+          >
+            <Shield className="w-4 h-4 text-indigo-400" />
+            <span className="hidden xl:inline text-[11px] uppercase tracking-wider text-black dark:text-[#A1A1A1]">Admin</span>
+          </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 rounded-full bg-indigo-500 dark:bg-indigo-400 text-white min-h-[38px] min-w-[38px] flex items-center justify-center font-bold"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden mt-3 pt-4 border-t border-gray-200 dark:border-white/10 space-y-3 pb-2 bg-white dark:bg-black/90 p-4 rounded-2xl shadow-xl">
+          <nav className="flex flex-col gap-2">
+            {navLinks.map(link => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(e, link.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition-all ${
+                    isActive
+                      ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold border-l-4 border-indigo-500 dark:border-indigo-400'
+                      : 'text-black dark:text-[#F5F5F5] hover:bg-gray-50 dark:hover:bg-white/5'
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  <span className={`text-xs ${isActive ? 'text-indigo-500' : 'text-indigo-400'}`}>➔</span>
+                </a>
+              );
+            })}
+          </nav>
+
+          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenPrayerModal();
+              }}
+              className="px-3 py-2.5 bg-indigo-500 dark:bg-indigo-400 text-white rounded-xl text-xs font-bold text-center"
+            >
+              🙏 Prayer Request
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenGiveModal();
+              }}
+              className="px-3 py-2.5 bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl text-xs font-bold text-center border border-gray-200 dark:border-white/10"
+            >
+              💝 Give / Offering
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};

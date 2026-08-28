@@ -1,0 +1,6 @@
+{
+  "name": "Gospel Fellowship Church",
+  "description": "Accessible, responsive church website for Gospel Fellowship Church featuring events, sermon audio player, simple prayer request form, senior accessibility modes, and dark mode.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
