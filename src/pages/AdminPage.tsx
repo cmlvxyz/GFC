@@ -10,6 +10,7 @@ import {
   Attendee,
   Testimonial
 } from '../types';
+import { login as loginWithBackend } from '../api';
 import {
   Shield,
   X,

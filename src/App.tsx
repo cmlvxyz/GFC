@@ -153,7 +153,14 @@ export default function App() {
   const handleApprovePrayer = (id: string) => { setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p)); saveRemote(updateRecord('prayers', id, { status: 'approved' })); };
   const handleMarkPrayerAnswered = (id: string, testimony?: string) => { setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'answered', answeredTestimony: testimony } : p)); saveRemote(updateRecord('prayers', id, { status: 'answered', answeredTestimony: testimony })); };
   const handleAddAttendee = (newAttendee: Attendee) => { setAttendees(prev => [newAttendee, ...prev]); saveRemote(createRecord('attendees', newAttendee)); };
-  const handleRegisterAttendee = (newAttendee: Attendee) => { setAttendees(prev => [newAttendee, ...prev]); saveRemote(createRecord('attendees', n  // Reset Data
+  const handleRegisterAttendee = (newAttendee: Attendee) => { setAttendees(prev => [newAttendee, ...prev]); saveRemote(createRecord('attendees', newAttendee)); };
+  const handleAddAnnouncement = (newAnnouncement: Announcement) => { setAnnouncements(prev => [newAnnouncement, ...prev]); saveRemote(createRecord('announcements', newAnnouncement)); };
+  const handleDeleteAnnouncement = (id: string) => { setAnnouncements(prev => prev.filter(a => a.id !== id)); saveRemote(deleteRecord('announcements', id)); };
+  const handleTogglePinAnnouncement = (id: string) => { const nextIsPinned = !announcements.find(a => a.id === id)?.isPinned; setAnnouncements(prev => prev.map(a => a.id === id ? { ...a, isPinned: nextIsPinned } : a)); saveRemote(updateRecord('announcements', id, { isPinned: nextIsPinned })); };
+  const handleAddMember = (newMember: Member) => { setMembers(prev => [newMember, ...prev]); saveRemote(createRecord('members', newMember)); };
+  const handleDeleteMember = (id: string) => { setMembers(prev => prev.filter(m => m.id !== id)); saveRemote(deleteRecord('members', id)); };
+  const handleAddTestimonial = (newTestimonial: Testimonial) => { setTestimonials(prev => [newTestimonial, ...prev]); saveRemote(createRecord('testimonials', newTestimonial)); };
+  const handleDeleteTestimonial = (id: string) => { setTestimonials(prev => prev.filter(t => t.id !== id)); saveRemote(deleteRecord('testimonials', id)); };
   const handleResetData = () => {
     void resetRemoteData().catch(error => console.error('Failed to reset remote data.', error));
     localStorage.removeItem('gospelfc_darkmode');
