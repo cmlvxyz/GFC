@@ -7,7 +7,8 @@ import {
   DEFAULT_SERMONS,
   DEFAULT_PRAYERS,
   DEFAULT_ATTENDEES,
-  DEFAULT_ANNOUNCEMENTS
+  DEFAULT_ANNOUNCEMENTS,
+  DEFAULT_TESTIMONIALS
 } from './data/churchData';
 
 import { Header } from './components/Header';
@@ -19,6 +20,7 @@ import { PrayerFormSection } from './components/PrayerFormSection';
 import { ContactSection } from './components/ContactSection';
 import { AdminPage } from './pages/AdminPage';
 import { Footer } from './components/Footer';
+import { bootstrapContent, createRecord, deleteRecord, getContent, resetRemoteData, updateRecord } from './api';
 
 export default function App() {
   // Theme & Accessibility State
@@ -39,7 +41,12 @@ export default function App() {
   const [attendees, setAttendees] = useState<Attendee[]>(DEFAULT_ATTENDEES);
   const [members, setMembers] = useState<Member[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>(DEFAULT_ANNOUNCEMENTS);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(DEFAULT_TESTIMONIALS);
+
+  const defaultContent = {
+    events: DEFAULT_EVENTS, sermons: DEFAULT_SERMONS, prayers: DEFAULT_PRAYERS, attendees: DEFAULT_ATTENDEES,
+    members: [], announcements: DEFAULT_ANNOUNCEMENTS, testimonials: DEFAULT_TESTIMONIALS
+  };
 
   // Modals & Active Section
   const [showAdminPage, setShowAdminPage] = useState(false);
@@ -85,42 +92,26 @@ export default function App() {
     };
   }, []);
 
-  // Load saved data from localStorage on mount
+  // Load shared data from the GFC-DATA backend on mount
   useEffect(() => {
-    const savedEvents = localStorage.getItem('gospelfc_events');
-    if (savedEvents) {
-      try { setEvents(JSON.parse(savedEvents)); } catch (e) {}
-    }
-
-    const savedSermons = localStorage.getItem('gospelfc_sermons');
-    if (savedSermons) {
-      try { setSermons(JSON.parse(savedSermons)); } catch (e) {}
-    }
-
-    const savedPrayers = localStorage.getItem('gospelfc_prayers');
-    if (savedPrayers) {
-      try { setPrayers(JSON.parse(savedPrayers)); } catch (e) {}
-    }
-
-    const savedAttendees = localStorage.getItem('gospelfc_attendees');
-    if (savedAttendees) {
-      try { setAttendees(JSON.parse(savedAttendees)); } catch (e) {}
-    }
-
-    const savedMembers = localStorage.getItem('gospelfc_members');
-    if (savedMembers) {
-      try { setMembers(JSON.parse(savedMembers)); } catch (e) {}
-    }
-
-    const savedAnnouncements = localStorage.getItem('gospelfc_announcements');
-    if (savedAnnouncements) {
-      try { setAnnouncements(JSON.parse(savedAnnouncements)); } catch (e) {}
-    }
-
-    const savedTestimonials = localStorage.getItem('gospelfc_testimonials');
-    if (savedTestimonials) {
-      try { setTestimonials(JSON.parse(savedTestimonials)); } catch (e) {}
-    }
+    let cancelled = false;
+    const loadRemoteContent = async () => {
+      try {
+        const remote = await getContent();
+        if (cancelled) return;
+        if (!remote.initialized) {
+          setEvents(defaultContent.events); setSermons(defaultContent.sermons); setPrayers(defaultContent.prayers);
+          setAttendees(defaultContent.attendees); setMembers(defaultContent.members); setAnnouncements(defaultContent.announcements);
+          setTestimonials(defaultContent.testimonials);
+          await bootstrapContent(defaultContent);
+          return;
+        }
+        setEvents(remote.events); setSermons(remote.sermons); setPrayers(remote.prayers); setAttendees(remote.attendees);
+        setMembers(remote.members); setAnnouncements(remote.announcements); setTestimonials(remote.testimonials);
+      } catch (error) { console.error('GFC-DATA backend unavailable; using local defaults.', error); }
+    };
+    void loadRemoteContent();
+    return () => { cancelled = true; };
   }, []);
 
   // Dark Mode Sync
@@ -148,59 +139,27 @@ export default function App() {
     localStorage.setItem('gospelfc_textsize', textSize);
   }, [textSize]);
 
-  // Save State Changes
-  useEffect(() => { localStorage.setItem('gospelfc_events', JSON.stringify(events)); }, [events]);
-  useEffect(() => { localStorage.setItem('gospelfc_sermons', JSON.stringify(sermons)); }, [sermons]);
-  useEffect(() => { localStorage.setItem('gospelfc_prayers', JSON.stringify(prayers)); }, [prayers]);
-  useEffect(() => { localStorage.setItem('gospelfc_attendees', JSON.stringify(attendees)); }, [attendees]);
-  useEffect(() => { localStorage.setItem('gospelfc_members', JSON.stringify(members)); }, [members]);
-  useEffect(() => { localStorage.setItem('gospelfc_announcements', JSON.stringify(announcements)); }, [announcements]);
-  useEffect(() => { localStorage.setItem('gospelfc_testimonials', JSON.stringify(testimonials)); }, [testimonials]);
+  // The backend is now the source of truth; local state remains optimistic for instant UI updates.
 
   // Event Handlers
-  const handleAddEvent = (newEvent: ChurchEvent) => setEvents(prev => [newEvent, ...prev]);
-  const handleUpdateEvent = (updatedEvent: ChurchEvent) => setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e));
-  const handleDeleteEvent = (id: string) => setEvents(prev => prev.filter(e => e.id !== id));
-
-  const handleAddSermon = (newSermon: Sermon) => setSermons(prev => [newSermon, ...prev]);
-  const handleDeleteSermon = (id: string) => setSermons(prev => prev.filter(s => s.id !== id));
-
-  const handleAddPrayer = (newPrayer: PrayerRequest) => setPrayers(prev => [newPrayer, ...prev]);
-  const handleDeletePrayer = (id: string) => setPrayers(prev => prev.filter(p => p.id !== id));
-  const handleApprovePrayer = (id: string) => setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p));
-  const handleMarkPrayerAnswered = (id: string, testimony?: string) => setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'answered', answeredTestimony: testimony } : p));
-
-  const handleAddAttendee = (newAttendee: Attendee) => setAttendees(prev => [newAttendee, ...prev]);
-  const handleRegisterAttendee = (newAttendee: Attendee) => setAttendees(prev => [newAttendee, ...prev]);
-
-  const handleAddTestimonial = (newTestimonial: Testimonial) => setTestimonials(prev => [newTestimonial, ...prev]);
-  const handleDeleteTestimonial = (id: string) => setTestimonials(prev => prev.filter(t => t.id !== id));
-
-  const handleAddAnnouncement = (newAnn: Announcement) => setAnnouncements(prev => [newAnn, ...prev]);
-  const handleDeleteAnnouncement = (id: string) => setAnnouncements(prev => prev.filter(a => a.id !== id));
-  const handleTogglePinAnnouncement = (id: string) => setAnnouncements(prev => prev.map(a => a.id === id ? { ...a, isPinned: !a.isPinned } : a));
-
-  const handleAddMember = (newMember: Member) => setMembers(prev => [newMember, ...prev]);
-  const handleDeleteMember = (id: string) => setMembers(prev => prev.filter(m => m.id !== id));
-
-  // Reset Data
+  const saveRemote = (operation: Promise<unknown>) => { operation.catch(error => console.error('Failed to sync with GFC-DATA.', error)); };
+  const handleAddEvent = (newEvent: ChurchEvent) => { setEvents(prev => [newEvent, ...prev]); saveRemote(createRecord('events', newEvent)); };
+  const handleUpdateEvent = (updatedEvent: ChurchEvent) => { setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e)); saveRemote(updateRecord('events', updatedEvent.id, updatedEvent)); };
+  const handleDeleteEvent = (id: string) => { setEvents(prev => prev.filter(e => e.id !== id)); saveRemote(deleteRecord('events', id)); };
+  const handleAddSermon = (newSermon: Sermon) => { setSermons(prev => [newSermon, ...prev]); saveRemote(createRecord('sermons', newSermon)); };
+  const handleDeleteSermon = (id: string) => { setSermons(prev => prev.filter(s => s.id !== id)); saveRemote(deleteRecord('sermons', id)); };
+  const handleAddPrayer = (newPrayer: PrayerRequest) => { setPrayers(prev => [newPrayer, ...prev]); saveRemote(createRecord('prayers', newPrayer)); };
+  const handleDeletePrayer = (id: string) => { setPrayers(prev => prev.filter(p => p.id !== id)); saveRemote(deleteRecord('prayers', id)); };
+  const handleApprovePrayer = (id: string) => { setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'approved' } : p)); saveRemote(updateRecord('prayers', id, { status: 'approved' })); };
+  const handleMarkPrayerAnswered = (id: string, testimony?: string) => { setPrayers(prev => prev.map(p => p.id === id ? { ...p, status: 'answered', answeredTestimony: testimony } : p)); saveRemote(updateRecord('prayers', id, { status: 'answered', answeredTestimony: testimony })); };
+  const handleAddAttendee = (newAttendee: Attendee) => { setAttendees(prev => [newAttendee, ...prev]); saveRemote(createRecord('attendees', newAttendee)); };
+  const handleRegisterAttendee = (newAttendee: Attendee) => { setAttendees(prev => [newAttendee, ...prev]); saveRemote(createRecord('attendees', n  // Reset Data
   const handleResetData = () => {
-    localStorage.removeItem('gospelfc_events');
-    localStorage.removeItem('gospelfc_sermons');
-    localStorage.removeItem('gospelfc_prayers');
-    localStorage.removeItem('gospelfc_attendees');
-    localStorage.removeItem('gospelfc_members');
-    localStorage.removeItem('gospelfc_announcements');
-    localStorage.removeItem('gospelfc_testimonials');
+    void resetRemoteData().catch(error => console.error('Failed to reset remote data.', error));
     localStorage.removeItem('gospelfc_darkmode');
-    setEvents(DEFAULT_EVENTS);
-    setSermons(DEFAULT_SERMONS);
-    setPrayers(DEFAULT_PRAYERS);
-    setAttendees(DEFAULT_ATTENDEES);
-    setMembers([]);
-    setAnnouncements(DEFAULT_ANNOUNCEMENTS);
-    setTestimonials([]);
-    window.location.reload();
+    setEvents(defaultContent.events); setSermons(defaultContent.sermons); setPrayers(defaultContent.prayers);
+    setAttendees(defaultContent.attendees); setMembers(defaultContent.members); setAnnouncements(defaultContent.announcements);
+    setTestimonials(defaultContent.testimonials); window.location.reload();
   };
 
   const scrollToSection = (id: string) => {
