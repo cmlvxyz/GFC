@@ -287,19 +287,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // ============================================
   // AUTH HANDLERS
   // ============================================
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      if (username === 'admin' && password === 'admin123') {
-        setIsAuthenticated(true);
-        setErrorMsg('');
-        showToast('✅ Welcome to Admin Dashboard!', 'success');
-      } else {
-        setErrorMsg('Invalid username or password. (Use default: admin / admin123)');
-      }
-      setIsLoading(false);
-    }, 800);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault(); setIsLoading(true); setErrorMsg('');
+    try { await loginWithBackend(username, password); setIsAuthenticated(true); showToast('✅ Welcome to Admin Dashboard!', 'success'); }
+    catch (error) { setErrorMsg(error instanceof Error ? error.message : 'Invalid username or password.'); }
+    finally { setIsLoading(false); }
   };
 
   // ============================================
