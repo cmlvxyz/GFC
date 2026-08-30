@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Shield } from 'lucide-react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import { TextSizeLevel } from '../types';
 
 interface HeaderProps {
@@ -157,16 +157,6 @@ export const Header: React.FC<HeaderProps> = ({
               {isDarkMode ? 'Dark Mode' : 'Light Mode'}
             </span>
             {isDarkMode ? <Sun className="w-3.5 h-3.5 text-indigo-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
-          </button>
-
-          {/* Admin Direct Button */}
-          <button
-            onClick={onOpenAdmin}
-            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-[#A1A1A1] font-medium text-xs border border-gray-200 dark:border-white/10 flex items-center gap-1 min-h-[38px]"
-            title="Admin Dashboard"
-          >
-            <Shield className="w-4 h-4 text-indigo-400" />
-            <span className="hidden xl:inline text-[11px] uppercase tracking-wider text-black dark:text-[#A1A1A1]">Admin</span>
           </button>
 
           {/* Mobile Menu Button */}

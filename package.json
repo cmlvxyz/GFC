@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
    "scripts": {
-    "dev": "vite --port=3002 --host=0.0.0.0 --open",
-    "dev:network": "vite --port=3002 --host=0.0.0.0 --open",
+    "dev": "node banner.cjs && vite --port=3002 --host=0.0.0.0 --open",
+    "dev:network": "node banner.cjs && vite --port=3002 --host=0.0.0.0 --open",
     "build": "vite build",
     "preview": "vite preview --host=0.0.0.0 --open",
     "clean": "rm -rf dist server.js",
@@ -39,3 +39,6 @@
     "vite": "^6.2.3"
   }
 }
+
+
+
