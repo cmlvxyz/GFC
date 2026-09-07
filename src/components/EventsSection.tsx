@@ -320,6 +320,9 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onAddEvent
           <h2 className="text-3xl sm:text-5xl font-serif text-black dark:text-white">
             Church Events & Schedule
           </h2>
+          <p className="text-sm text-gray-500 dark:text-[#A1A1A1]">
+            {events.length} events available
+          </p>
         </div>
 
         <button
@@ -331,54 +334,66 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onAddEvent
         </button>
       </div>
 
-      {/* Events Cards Grid - Same as before */}
+      {/* EVENTS CARDS GRID - DITO NAGDI-DISPLAY ANG MGA EVENTS */}
       <div className="events-grid">
-        {events.map(ev => {
-          const imageSrc = getImageSrc(ev);
-          
-          return (
-            <div
-              key={ev.id}
-              onClick={() => {
-                setSelectedEvent(ev);
-                setSelectedDateIndex(0);
-                setShowAllPhotos(false);
-              }}
-              className="event-card"
-            >
-              <div>
-                <div className="relative overflow-hidden">
-                  <img
-                    src={imageSrc}
-                    alt={ev.title}
-                    loading="lazy"
-                    onError={() => handleImageError(ev.id)}
-                  />
-                  <span className="event-tag absolute top-3 left-3">
-                    {ev.tag}
-                  </span>
-                </div>
-
-                <div className="event-card-content">
-                  <div className="flex items-center gap-1.5 text-indigo-400 text-xs font-bold mb-1">
-                    <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>{ev.date}</span>
+        {events.length === 0 ? (
+          <div className="col-span-full text-center py-12 bg-white dark:bg-[#1A1A1A] rounded-3xl border border-gray-200 dark:border-white/10">
+            <p className="text-gray-500 dark:text-[#A1A1A1]">No events yet. Click "Add New Event" to create one.</p>
+          </div>
+        ) : (
+          events.map(ev => {
+            const imageSrc = getImageSrc(ev);
+            
+            return (
+              <div
+                key={ev.id}
+                onClick={() => {
+                  setSelectedEvent(ev);
+                  setSelectedDateIndex(0);
+                  setShowAllPhotos(false);
+                }}
+                className="event-card"
+              >
+                <div>
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={imageSrc}
+                      alt={ev.title}
+                      loading="lazy"
+                      onError={() => handleImageError(ev.id)}
+                    />
+                    <span className="event-tag absolute top-3 left-3">
+                      {ev.tag}
+                    </span>
                   </div>
 
-                  <h3>{ev.title}</h3>
-                  <p>{ev.description}</p>
-
-                  {ev.location && (
-                    <div className="event-location flex items-center gap-1 mt-1">
-                      <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-indigo-400" />
-                      <span>{ev.location}</span>
+                  <div className="event-card-content">
+                    <div className="flex items-center gap-1.5 text-indigo-400 text-xs font-bold mb-1">
+                      <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>{ev.date}</span>
                     </div>
-                  )}
+
+                    <h3>{ev.title}</h3>
+                    <p>{ev.description}</p>
+
+                    {ev.location && (
+                      <div className="event-location flex items-center gap-1 mt-1">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-indigo-400" />
+                        <span>{ev.location}</span>
+                      </div>
+                    )}
+
+                    {ev.dateEntries && ev.dateEntries.length > 0 && (
+                      <div className="mt-2 text-xs text-indigo-500 dark:text-indigo-400 font-bold">
+                        📸 {ev.dateEntries.length} photo album(s)
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
       {/* EVENT DETAILS MODAL */}

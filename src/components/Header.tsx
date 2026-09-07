@@ -7,7 +7,6 @@ interface HeaderProps {
   setIsDarkMode: (dark: boolean) => void;
   textSize: TextSizeLevel;
   setTextSize: (level: TextSizeLevel) => void;
-  onOpenAdmin: () => void;
   onOpenPrayerModal: () => void;
   onOpenGiveModal: () => void;
   onOpenGetStarted: () => void;
@@ -20,7 +19,6 @@ export const Header: React.FC<HeaderProps> = ({
   setIsDarkMode,
   textSize,
   setTextSize,
-  onOpenAdmin,
   onOpenPrayerModal,
   onOpenGiveModal,
   onOpenGetStarted,
@@ -29,7 +27,6 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [logoClickCount, setLogoClickCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,18 +35,6 @@ export const Header: React.FC<HeaderProps> = ({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleLogoClick = () => {
-    setLogoClickCount(prev => {
-      const next = prev + 1;
-      if (next >= 5) {
-        onOpenAdmin();
-        return 0;
-      }
-      return next;
-    });
-    setTimeout(() => setLogoClickCount(0), 2500);
-  };
 
   const navLinks = [
     { href: '#homeSection', label: 'Home', id: 'homeSection' },
@@ -81,13 +66,9 @@ export const Header: React.FC<HeaderProps> = ({
       role="banner"
     >
       <div className="flex items-center justify-between gap-4">
-        {/* Brand & Logo */}
+        {/* Brand & Logo - WALA NG 5-CLICK ADMIN */}
         <div className="flex items-center gap-3">
-          <div
-            onClick={handleLogoClick}
-            className="cursor-pointer group relative flex-shrink-0"
-            title="Click 5 times for Admin Access"
-          >
+          <div className="flex-shrink-0">
             <div className="w-15 h-15 sm:w-15 sm:h-15 rounded-full overflow-hidden border border-indigo-300 dark:border-indigo-400/50 shadow-md bg-indigo-50 dark:bg-black/60 flex items-center justify-center">
               <img 
                 src="/image.png" 
@@ -95,11 +76,6 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            {logoClickCount > 0 && (
-              <span className="absolute -bottom-1 -right-1 bg-indigo-500 text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
-                {logoClickCount}/5
-              </span>
-            )}
           </div>
 
           <a
@@ -145,8 +121,19 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Action Controls */}
+        {/* Admin Login Button - Sa header mismo */}
         <div className="flex items-center gap-2">
+          {/* Admin Login Link */}
+          <a
+            href="http://localhost:3003"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-400 dark:hover:brightness-110 text-white rounded-full items-center gap-1.5 border border-indigo-200 dark:border-indigo-400/30 min-h-[38px] text-xs font-bold transition-all"
+          >
+            <Shield className="w-3.5 h-3.5" />
+            <span>Admin</span>
+          </a>
+
           {/* Dark Mode Toggle Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -217,8 +204,21 @@ export const Header: React.FC<HeaderProps> = ({
               💝 Give / Offering
             </button>
           </div>
+          
+          {/* Admin Link sa Mobile Menu */}
+          <a
+            href="http://localhost:3003"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block px-4 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold text-center mt-2"
+          >
+            🔐 Admin Dashboard
+          </a>
         </div>
       )}
     </header>
   );
 };
+
+// Import shield icon sa taas
+import { Shield } from 'lucide-react'; // Idagdag ito sa imports

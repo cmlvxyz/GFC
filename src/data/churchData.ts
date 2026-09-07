@@ -87,6 +87,66 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
         verse: 'Pray without ceasing.',
         verseRef: '1 Thessalonians 5:17'
       },
+      {
+        date: 'July 12',
+        photos: [
+        ],
+      },
+      {
+        date: 'July 19',
+        photos: [
+        ],
+      },
+      {
+        date: 'July 26',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 2',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 9',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 16',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 23',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 30',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 6',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 13',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 20',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 27',
+        photos: [
+        ],
+      },
     ]
   },
   {
@@ -291,6 +351,26 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
       },
       {
         date: 'August 18',
+        photos: [
+        ],
+      },
+      {
+        date: 'August 25',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 1',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 8',
+        photos: [
+        ],
+      },
+      {
+        date: 'September 15',
         photos: [
         ],
       },

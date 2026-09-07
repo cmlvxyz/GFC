@@ -18,7 +18,6 @@ import { EventsSection } from './components/EventsSection';
 import { SermonsSection } from './components/SermonsSection';
 import { PrayerFormSection } from './components/PrayerFormSection';
 import { ContactSection } from './components/ContactSection';
-import { AdminPage } from './pages/AdminPage';
 import { Footer } from './components/Footer';
 import { bootstrapContent, createRecord, deleteRecord, getContent, resetRemoteData, updateRecord } from './api';
 
@@ -49,7 +48,6 @@ export default function App() {
   };
 
   // Modals & Active Section
-  const [showAdminPage, setShowAdminPage] = useState(false);
   const [giveModalOpen, setGiveModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('homeSection');
 
@@ -73,7 +71,7 @@ export default function App() {
         },
         {
           root: null,
-          rootMargin: '-20% 0px -20% 0px', // Trigger when section is in the middle of viewport
+          rootMargin: '-20% 0px -20% 0px',
           threshold: 0.2,
         }
       );
@@ -82,7 +80,6 @@ export default function App() {
       return observer;
     });
 
-    // Cleanup
     return () => {
       observers.forEach((observer) => {
         if (observer) {
@@ -139,8 +136,6 @@ export default function App() {
     localStorage.setItem('gospelfc_textsize', textSize);
   }, [textSize]);
 
-  // The backend is now the source of truth; local state remains optimistic for instant UI updates.
-
   // Event Handlers
   const saveRemote = (operation: Promise<unknown>) => { operation.catch(error => console.error('Failed to sync with GFC-DATA.', error)); };
   const handleAddEvent = (newEvent: ChurchEvent) => { setEvents(prev => [newEvent, ...prev]); saveRemote(createRecord('events', newEvent)); };
@@ -185,43 +180,7 @@ export default function App() {
       : 'text-[100%]';
 
   // ============================================
-  // RENDER - Admin Page
-  // ============================================
-  if (showAdminPage) {
-    return (
-      <AdminPage
-        events={events}
-        announcements={announcements}
-        sermons={sermons}
-        prayers={prayers}
-        members={members}
-        attendees={attendees}
-        testimonials={testimonials}
-        onAddEvent={handleAddEvent}
-        onUpdateEvent={handleUpdateEvent}
-        onDeleteEvent={handleDeleteEvent}
-        onAddAnnouncement={handleAddAnnouncement}
-        onDeleteAnnouncement={handleDeleteAnnouncement}
-        onTogglePinAnnouncement={handleTogglePinAnnouncement}
-        onAddSermon={handleAddSermon}
-        onDeleteSermon={handleDeleteSermon}
-        onAddPrayer={handleAddPrayer}
-        onDeletePrayer={handleDeletePrayer}
-        onApprovePrayer={handleApprovePrayer}
-        onMarkPrayerAnswered={handleMarkPrayerAnswered}
-        onAddAttendee={handleAddAttendee}
-        onAddMember={handleAddMember}
-        onDeleteMember={handleDeleteMember}
-        onResetData={handleResetData}
-        onAddTestimonial={handleAddTestimonial}
-        onDeleteTestimonial={handleDeleteTestimonial}
-        onClose={() => setShowAdminPage(false)}
-      />
-    );
-  }
-
-  // ============================================
-  // RENDER - Main Website
+  // RENDER - Main Website (WALA NG ADMIN PAGE)
   // ============================================
   return (
     <div className={`min-h-screen bg-white dark:bg-[#0F0F0F] text-slate-900 dark:text-[#F5F5F5] font-sans selection:bg-[#D4AF37] selection:text-black ${fontScaleClass}`}>
@@ -230,7 +189,6 @@ export default function App() {
         setIsDarkMode={setIsDarkMode}
         textSize={textSize}
         setTextSize={setTextSize}
-        onOpenAdmin={() => setShowAdminPage(true)}
         onOpenPrayerModal={() => scrollToSection('prayerSection')}
         onOpenGiveModal={() => setGiveModalOpen(true)}
         onOpenGetStarted={() => scrollToSection('aboutSection')}
@@ -252,6 +210,7 @@ export default function App() {
         <EventsSection
           events={events}
           onAddEvent={handleAddEvent}
+          onUpdateEvent={handleUpdateEvent}
         />
 
         <SermonsSection
