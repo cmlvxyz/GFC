@@ -5,11 +5,12 @@ const API_URL = 'http://localhost:4000';
 
 async function bootstrapData() {
   try {
+    console.log('📤 Bootstrapping data to GFC-DATA backend...');
+    
     const response = await fetch(`${API_URL}/api/bootstrap`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('gfc_admin_token') || ''
       },
       body: JSON.stringify({
         events: DEFAULT_EVENTS,
@@ -25,9 +26,15 @@ async function bootstrapData() {
     if (response.ok) {
       console.log('✅ Data bootstrapped successfully!');
       const data = await response.json();
-      console.log('Events imported:', data.events.length);
+      console.log('📊 Events imported:', data.events.length);
+      console.log('📊 Sermons imported:', data.sermons.length);
+      console.log('📊 Prayers imported:', data.prayers.length);
+      console.log('📊 Attendees imported:', data.attendees.length);
+      console.log('📊 Announcements imported:', data.announcements.length);
+      console.log('📊 Testimonials imported:', data.testimonials.length);
     } else {
-      console.error('❌ Failed to bootstrap data:', await response.text());
+      const error = await response.text();
+      console.error('❌ Failed to bootstrap data:', error);
     }
   } catch (error) {
     console.error('❌ Error:', error);
