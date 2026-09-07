@@ -1,5 +1,7 @@
+// GFC/src/components/Header.tsx
+
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
+import { Moon, Sun, Menu, X, Shield } from 'lucide-react'; // <- Idagdag ang Shield dito
 import { TextSizeLevel } from '../types';
 
 interface HeaderProps {
@@ -66,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
       role="banner"
     >
       <div className="flex items-center justify-between gap-4">
-        {/* Brand & Logo - WALA NG 5-CLICK ADMIN */}
+        {/* Brand & Logo */}
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0">
             <div className="w-15 h-15 sm:w-15 sm:h-15 rounded-full overflow-hidden border border-indigo-300 dark:border-indigo-400/50 shadow-md bg-indigo-50 dark:bg-black/60 flex items-center justify-center">
@@ -121,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Admin Login Button - Sa header mismo */}
+        {/* Action Controls */}
         <div className="flex items-center gap-2">
           {/* Admin Login Link */}
           <a
@@ -219,6 +221,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-
-// Import shield icon sa taas
-import { Shield } from 'lucide-react'; // Idagdag ito sa imports

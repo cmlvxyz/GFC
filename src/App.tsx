@@ -12,6 +12,7 @@ import {
   DEFAULT_TESTIMONIALS
 } from './data/churchData';
 
+
 import { Header } from './components/Header';
 import { HomeSection } from './components/HomeSection';
 import { AboutSection } from './components/AboutSection';
