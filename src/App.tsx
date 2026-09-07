@@ -12,7 +12,6 @@ import {
   DEFAULT_TESTIMONIALS
 } from './data/churchData';
 
-
 import { Header } from './components/Header';
 import { HomeSection } from './components/HomeSection';
 import { AboutSection } from './components/AboutSection';
@@ -24,6 +23,7 @@ import { Footer } from './components/Footer';
 import { UploadPage } from './pages/UploadPage';
 import { bootstrapContent, createRecord, deleteRecord, getContent, resetRemoteData, updateRecord } from './api';
 
+// Get API URL from environment or use localhost as fallback
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/$/, '');
 
 export default function App() {

@@ -21,12 +21,14 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [uploadUrl, setUploadUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch event details
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
+        // Use the apiUrl from props
         const response = await fetch(`${apiUrl}/api/content`);
         const data = await response.json();
         const event = data.events?.find((e: any) => e.id === eventId);
@@ -38,11 +40,14 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
           if (entry) {
             setDateTitle(entry.date || `Album ${dateIndex + 1}`);
           }
+          // Set the upload URL
+          setUploadUrl(`${apiUrl}/api/uploads`);
         }
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching event:', error);
         setIsLoading(false);
+        setErrorMessage('Cannot connect to server. Please try again later.');
       }
     };
 
@@ -56,6 +61,11 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setErrorMessage('File is too large. Please select an image under 10MB.');
+        return;
+      }
       setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -65,7 +75,10 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      setErrorMessage('Please select a photo first.');
+      return;
+    }
     if (!eventId) {
       setErrorMessage('Event ID is missing. Please use a valid QR code.');
       return;
@@ -87,7 +100,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
       const base64Image = await base64Promise;
 
       // Upload to API
-      const response = await fetch(`${apiUrl}/api/uploads`, {
+      const response = await fetch(uploadUrl || `${apiUrl}/api/uploads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +140,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14]">
         <div className="text-center space-y-3">
           <Loader2 className="w-12 h-12 text-indigo-500 animate-spin mx-auto" />
           <p className="text-gray-500 dark:text-[#A1A1A1]">Loading event details...</p>
@@ -138,7 +151,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
 
   if (!eventId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] p-4">
         <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl max-w-md w-full p-8 text-center shadow-2xl border border-gray-200 dark:border-white/10">
           <div className="text-6xl mb-4">😔</div>
           <h2 className="text-xl font-bold text-black dark:text-white mb-2">Invalid QR Code</h2>
@@ -153,7 +166,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
 
   if (uploadStatus === 'success') {
     return (
-      <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] flex items-center justify-center p-4">
         <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-gray-200 dark:border-white/10">
           <div className="text-center py-8 space-y-4">
             <div className="w-20 h-20 mx-auto bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center">
@@ -176,7 +189,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] flex items-center justify-center p-4">
       <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-gray-200 dark:border-white/10">
         {/* Header */}
         <div className="text-center mb-6">
