@@ -192,16 +192,6 @@ export default function App() {
     operation.catch(error => console.error('Failed to sync with GFC-DATA.', error)); 
   };
   
-  const handleAddEvent = (newEvent: ChurchEvent) => { 
-    setEvents(prev => [newEvent, ...prev]); 
-    saveRemote(createRecord('events', newEvent)); 
-  };
-  
-  const handleUpdateEvent = (updatedEvent: ChurchEvent) => { 
-    setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e)); 
-    saveRemote(updateRecord('events', updatedEvent.id, updatedEvent)); 
-  };
-  
   const handleDeleteEvent = (id: string) => { 
     setEvents(prev => prev.filter(e => e.id !== id)); 
     saveRemote(deleteRecord('events', id)); 
@@ -353,8 +343,6 @@ export default function App() {
 
                 <EventsSection
                   events={events}
-                  onAddEvent={handleAddEvent}
-                  onUpdateEvent={handleUpdateEvent}
                 />
 
                 <SermonsSection
