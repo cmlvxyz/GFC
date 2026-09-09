@@ -1,7 +1,7 @@
 // GFC/src/components/Header.tsx
 
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Shield } from 'lucide-react'; // <- Idagdag ang Shield dito
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import { TextSizeLevel } from '../types';
 
 interface HeaderProps {
@@ -125,17 +125,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
-          {/* Admin Login Link */}
-          <a
-            href="http://localhost:3003"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-400 dark:hover:brightness-110 text-white rounded-full items-center gap-1.5 border border-indigo-200 dark:border-indigo-400/30 min-h-[38px] text-xs font-bold transition-all"
-          >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Admin</span>
-          </a>
-
           {/* Dark Mode Toggle Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -206,16 +195,6 @@ export const Header: React.FC<HeaderProps> = ({
               💝 Give / Offering
             </button>
           </div>
-          
-          {/* Admin Link sa Mobile Menu */}
-          <a
-            href="http://localhost:3003"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block px-4 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold text-center mt-2"
-          >
-            🔐 Admin Dashboard
-          </a>
         </div>
       )}
     </header>
