@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full border border-indigo-400 ${
+      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full relative border border-indigo-400 ${
         isDarkMode ? 'border-white/10' : 'border-indigo-400'
       } ${
         isScrolled
@@ -137,6 +137,15 @@ export const Header: React.FC<HeaderProps> = ({
             {isDarkMode ? <Sun className="w-3.5 h-3.5 text-indigo-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
           </button>
 
+          {/* Mobile Dark Mode Toggle */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="flex sm:hidden p-2.5 bg-gray-100 dark:bg-white/10 rounded-full border border-gray-200 dark:border-white/10 min-h-[38px] min-w-[38px] items-center justify-center"
+            aria-label="Toggle dark mode"
+          >
+            {isDarkMode ? <Sun className="w-4 h-4 text-indigo-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+          </button>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -149,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-3 pt-4 border-t border-gray-200 dark:border-white/10 space-y-3 pb-2 bg-white dark:bg-black/90 p-4 rounded-2xl shadow-xl">
+        <div className="absolute top-full left-0 right-0 mt-2 lg:hidden bg-white dark:bg-black/95 space-y-3 p-4 rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl z-50">
           <nav className="flex flex-col gap-2">
             {navLinks.map(link => {
               const isActive = activeSection === link.id;
