@@ -24,7 +24,7 @@ import { UploadPage } from './pages/UploadPage';
 import { bootstrapContent, createRecord, deleteRecord, getContent, resetRemoteData, updateRecord } from './api';
 
 // Get API URL from environment or use localhost as fallback
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/$/, '');
+const API_URL = (import.meta.env.API_URL || import.meta.env.VITE_API_URL || 'https://gfc-admin-rosy.vercel.app').replace(/\/$/, '');
 
 export default function App() {
   // Theme & Accessibility State

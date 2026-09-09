@@ -2,7 +2,7 @@ import type { Announcement, Attendee, ChurchEvent, Member, PrayerRequest, Sermon
 
 export type Collection = 'events' | 'sermons' | 'prayers' | 'attendees' | 'members' | 'announcements' | 'testimonials';
 export interface RemoteContent { initialized: boolean; events: ChurchEvent[]; sermons: Sermon[]; prayers: PrayerRequest[]; attendees: Attendee[]; members: Member[]; announcements: Announcement[]; testimonials: Testimonial[]; }
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/$/, '');
+const API_URL = (import.meta.env.API_URL || import.meta.env.VITE_API_URL || 'https://gfc-admin-rosy.vercel.app').replace(/\/$/, '');
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('gfc_admin_token');
