@@ -2,11 +2,25 @@ import type { Announcement, Attendee, ChurchEvent, Member, PrayerRequest, Sermon
 
 export type Collection = 'events' | 'sermons' | 'prayers' | 'attendees' | 'members' | 'announcements' | 'testimonials';
 export interface RemoteContent { initialized: boolean; events: ChurchEvent[]; sermons: Sermon[]; prayers: PrayerRequest[]; attendees: Attendee[]; members: Member[]; announcements: Announcement[]; testimonials: Testimonial[]; }
-const API_URL = (import.meta.env.API_URL || import.meta.env.VITE_API_URL || 'https://gfc-admin-rosy.vercel.app').replace(/\/$/, '');
+
+// Production API: GFC public site -> GFC-Admin Railway service.
+// VITE_API_URL can override this for local development or another deployment.
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.API_URL ||
+  'https://gfc-admin.up.railway.app'
+).replace(/\/$/, '');
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('gfc_admin_token');
-  const response = await fetch(API_URL + '/api' + path, { ...options, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}), ...(options.headers || {}) } });
+  const response = await fetch(API_URL + '/api' + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
+      ...(options.headers || {})
+    }
+  });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.message || 'Request failed with status ' + response.status);
   return payload as T;
