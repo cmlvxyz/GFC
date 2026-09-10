@@ -1,8 +1,11 @@
 // GFC/src/pages/UploadPage.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Upload, Image, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+
+const IMAGE_FALLBACK =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" font-family="sans-serif" font-size="12" fill="%23999"%3ENo image%3C/text%3E%3C/svg%3E';
 
 interface UploadPageProps {
   apiUrl: string;
@@ -23,6 +26,10 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [uploadUrl, setUploadUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const [uploadedSessionPhotos, setUploadedSessionPhotos] = useState<string[]>([]);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   // Fetch event details
   useEffect(() => {
@@ -118,6 +125,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
         throw new Error(data.message || 'Upload failed');
       }
 
+      setUploadedSessionPhotos(prev => [...prev, base64Image]);
       setUploadStatus('success');
     } catch (error) {
       console.error('Upload error:', error);
@@ -136,6 +144,10 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const handleExit = () => {
+    navigate('/');
   };
 
   if (isLoading) {
@@ -166,24 +178,107 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
 
   if (uploadStatus === 'success') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] flex items-center justify-center p-4">
-        <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-gray-200 dark:border-white/10">
-          <div className="text-center py-8 space-y-4">
-            <div className="w-20 h-20 mx-auto bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-emerald-500" />
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-[#0a0a14] dark:via-[#0f0f1a] dark:to-[#0a0a14] p-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden">
+            {/* Success header */}
+            <div className="text-center py-7 px-4 border-b border-gray-100 dark:border-white/10">
+              <div className="w-14 h-14 mx-auto bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mb-2">
+                <CheckCircle className="w-7 h-7 text-emerald-500" />
+              </div>
+              <h3 className="text-xl font-bold text-black dark:text-white">Thank You! 🎉</h3>
+              <p className="text-sm text-gray-500 dark:text-[#A1A1A1] mt-1">
+                Na-upload na ang iyong photo. Makikita ito rito — at sa church gallery.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-black dark:text-white">Thank You! 🎉</h3>
-            <p className="text-sm text-gray-500 dark:text-[#A1A1A1]">
-              Your photo has been uploaded successfully! It will appear in the church gallery soon.
-            </p>
-            <button
-              onClick={handleReset}
-              className="px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-bold transition-all"
-            >
-              Upload Another Photo
-            </button>
+
+            {/* Uploaded gallery */}
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                    Napagkabahaging photos
+                  </p>
+                  <h4 className="font-bold text-black dark:text-white">
+                    {eventTitle} • {dateTitle}
+                  </h4>
+                </div>
+                <span className="text-xs font-bold text-gray-500 dark:text-[#A1A1A1]">
+                  {uploadedSessionPhotos.length}{' '}
+                  {uploadedSessionPhotos.length === 1 ? 'photo' : 'photos'}
+                </span>
+              </div>
+
+              {uploadedSessionPhotos.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 p-8 text-center text-gray-400 dark:text-gray-500 text-sm">
+                  No uploaded photos in this session.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {uploadedSessionPhotos.map((url, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all aspect-square cursor-pointer hover:scale-[1.02]"
+                      title={`${eventTitle} — ${dateTitle}`}
+                      onClick={() => setLightboxUrl(url)}
+                    >
+                      <img
+                        src={url}
+                        alt={`Uploaded photo ${idx + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform hover:scale-110 duration-500"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = IMAGE_FALLBACK;
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="p-5 pt-0 flex flex-wrap gap-2 justify-center">
+              <button
+                onClick={handleReset}
+                className="px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-bold transition-all flex items-center gap-2"
+              >
+                <Upload className="w-4 h-4" />
+                Upload Another Photo
+              </button>
+              <button
+                onClick={handleExit}
+                className="px-6 py-2.5 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/15 text-gray-700 dark:text-[#A1A1A1] rounded-xl text-sm font-bold transition-all flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Exit
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Lightbox view - exit button only, no delete */}
+        {lightboxUrl && (
+          <div
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setLightboxUrl(null)}
+          >
+            <button
+              onClick={() => setLightboxUrl(null)}
+              className="absolute top-4 right-4 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+              title="Exit preview"
+              aria-label="Exit preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={lightboxUrl}
+              alt="Uploaded photo preview"
+              className="max-h-full max-w-full rounded-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
       </div>
     );
   }
