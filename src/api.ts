@@ -18,3 +18,16 @@ export function updateRecord(collection: Collection, id: string, record: unknown
 export function deleteRecord(collection: Collection, id: string): Promise<void> { return request<void>('/' + collection + '/' + encodeURIComponent(id), { method: 'DELETE' }); }
 export function resetRemoteData(): Promise<void> { return request<void>('/content', { method: 'DELETE' }); }
 export async function login(username: string, password: string): Promise<void> { const result = await request<{ token: string }>('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }); localStorage.setItem('gfc_admin_token', result.token); }
+
+export interface Activity { id: string; type: string; action: string; message: string; icon: string; actor: 'public' | 'admin' | 'system'; createdAt: string; }
+export async function getActivityStream(onActivity: (activity: Activity) => void): Promise<() => void> {
+  const es = new EventSource(API_URL + '/api/activities/stream');
+  es.onmessage = (event) => {
+    try {
+      const payload = JSON.parse(event.data);
+      if (payload.type === 'activity' && payload.data) onActivity(payload.data as Activity);
+    } catch { /* ignore malformed messages */ }
+  };
+  es.onerror = () => { /* EventSource auto-reconnects */ };
+  return () => es.close();
+}

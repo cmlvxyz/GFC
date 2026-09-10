@@ -21,7 +21,7 @@ import { PrayerFormSection } from './components/PrayerFormSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { UploadPage } from './pages/UploadPage';
-import { bootstrapContent, createRecord, deleteRecord, getContent, resetRemoteData, updateRecord } from './api';
+import { bootstrapContent, createRecord, deleteRecord, getActivityStream, getContent, resetRemoteData, updateRecord } from './api';
 
 // Get API URL from environment or use localhost as fallback
 const API_URL = (import.meta.env.API_URL || import.meta.env.VITE_API_URL || 'https://gfc-admin-rosy.vercel.app').replace(/\/$/, '');
@@ -171,11 +171,24 @@ export default function App() {
 
     void refreshFromRemote();
 
-    // Auto-refresh so uploads/deletes from the admin show up instantly.
-    const poll = setInterval(refreshFromRemote, 8000);
+    // Live updates: the backend pushes a notification instantly whenever
+    // the admin uploads/deletes photos or events, so no waiting.
+    let closeStream: (() => void) | undefined;
+    void getActivityStream(activity => {
+      if (cancelled) return;
+      if (activity.type === 'allPhotos' || activity.type === 'events') {
+        if (['photo', 'created', 'updated', 'deleted'].includes(activity.action)) {
+          void refreshFromRemote();
+        }
+      }
+    }).then(close => { if (cancelled) close(); else closeStream = close; });
+
+    // Safety-net poll in case the live stream is temporarily down.
+    const poll = setInterval(refreshFromRemote, 10000);
 
     return () => {
       cancelled = true;
+      closeStream?.();
       clearInterval(poll);
     };
   }, []);

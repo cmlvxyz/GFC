@@ -54,25 +54,13 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
       },
       {
         date: 'June 21',
-        photos: [
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-        ],
+        photos: [],
         verse: 'Pray without ceasing.',
         verseRef: '1 Thessalonians 5:17'
       },
       {
         date: 'June 28',
-        photos: [
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-          '/Sunday Service/sunday-service.jpg',
-        ],
+        photos: [],
         verse: 'Pray without ceasing.',
         verseRef: '1 Thessalonians 5:17'
       },{
