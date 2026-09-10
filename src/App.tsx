@@ -47,6 +47,13 @@ export default function App() {
   const [announcements, setAnnouncements] = useState<Announcement[]>(DEFAULT_ANNOUNCEMENTS);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(DEFAULT_TESTIMONIALS);
 
+  /*
+   * True once the FIRST remote fetch settles. Until then we show a
+   * loading state so the event cards render exactly ONCE in the stable
+   * server order (no DEFAULT -> remote jump/reorder on every refresh).
+   */
+  const [dataHydrated, setDataHydrated] = useState(false);
+
   const defaultContent = {
     events: DEFAULT_EVENTS, 
     sermons: DEFAULT_SERMONS, 
@@ -100,38 +107,50 @@ export default function App() {
   }, []);
 
   // ============================================
-  // LOAD DATA FROM BACKEND
+  // LOAD DATA FROM BACKEND + AUTO-REFRESH
+  // Polls the backend so admin uploads/deletes appear
+  // automatically - no manual refresh needed.
   // ============================================
   useEffect(() => {
     let cancelled = false;
-    const loadRemoteContent = async () => {
+    let hydrated = false;
+    let bootstrapped = false;
+
+    const applyDefaults = () => {
+      setEvents(DEFAULT_EVENTS);
+      setSermons(DEFAULT_SERMONS);
+      setPrayers(DEFAULT_PRAYERS);
+      setAttendees(DEFAULT_ATTENDEES);
+      setMembers([]);
+      setAnnouncements(DEFAULT_ANNOUNCEMENTS);
+      setTestimonials(DEFAULT_TESTIMONIALS);
+    };
+
+    const refreshFromRemote = async () => {
       try {
         const remote = await getContent();
         if (cancelled) return;
-        
-        console.log('Remote content loaded:', remote);
-        console.log('Remote events count:', remote.events?.length || 0);
-        
+
+        hydrated = true;
+
         if (!remote.initialized || !remote.events || remote.events.length === 0) {
           console.log('No remote events found, using DEFAULT_EVENTS');
-          setEvents(DEFAULT_EVENTS);
-          setSermons(DEFAULT_SERMONS);
-          setPrayers(DEFAULT_PRAYERS);
-          setAttendees(DEFAULT_ATTENDEES);
-          setMembers([]);
-          setAnnouncements(DEFAULT_ANNOUNCEMENTS);
-          setTestimonials(DEFAULT_TESTIMONIALS);
-          
-          try {
-            await bootstrapContent(defaultContent);
-            console.log('Bootstrapped default data to backend');
-          } catch (bootstrapError) {
-            console.error('Failed to bootstrap data:', bootstrapError);
+          applyDefaults();
+
+          if (!bootstrapped) {
+            bootstrapped = true;
+            try {
+              await bootstrapContent(defaultContent);
+              console.log('Bootstrapped default data to backend');
+            } catch (bootstrapError) {
+              console.error('Failed to bootstrap data:', bootstrapError);
+            }
           }
           return;
         }
-        
-        console.log('Using remote events:', remote.events.length);
+
+        // Keep the same array order as the backend so the cards
+        // always render in the same position after refresh.
         setEvents(remote.events.length > 0 ? remote.events : DEFAULT_EVENTS);
         setSermons(remote.sermons.length > 0 ? remote.sermons : DEFAULT_SERMONS);
         setPrayers(remote.prayers.length > 0 ? remote.prayers : DEFAULT_PRAYERS);
@@ -139,21 +158,26 @@ export default function App() {
         setMembers(remote.members || []);
         setAnnouncements(remote.announcements.length > 0 ? remote.announcements : DEFAULT_ANNOUNCEMENTS);
         setTestimonials(remote.testimonials.length > 0 ? remote.testimonials : DEFAULT_TESTIMONIALS);
-        
+
       } catch (error) {
         console.error('GFC-DATA backend unavailable; using local defaults.', error);
-        setEvents(DEFAULT_EVENTS);
-        setSermons(DEFAULT_SERMONS);
-        setPrayers(DEFAULT_PRAYERS);
-        setAttendees(DEFAULT_ATTENDEES);
-        setMembers([]);
-        setAnnouncements(DEFAULT_ANNOUNCEMENTS);
-        setTestimonials(DEFAULT_TESTIMONIALS);
+        // Only fall back to defaults if we never got real data,
+        // otherwise keep showing the last good data.
+        if (!cancelled && !hydrated) applyDefaults();
+      } finally {
+        if (!cancelled) setDataHydrated(true);
       }
     };
-    
-    void loadRemoteContent();
-    return () => { cancelled = true; };
+
+    void refreshFromRemote();
+
+    // Auto-refresh so uploads/deletes from the admin show up instantly.
+    const poll = setInterval(refreshFromRemote, 8000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(poll);
+    };
   }, []);
 
   // ============================================
@@ -343,6 +367,7 @@ export default function App() {
 
                 <EventsSection
                   events={events}
+                  loading={!dataHydrated}
                 />
 
                 <SermonsSection

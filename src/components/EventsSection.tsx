@@ -4,9 +4,10 @@ import { MapPin, Clock, X } from 'lucide-react';
 
 interface EventsSectionProps {
   events: ChurchEvent[];
+  loading?: boolean;
 }
 
-export const EventsSection: React.FC<EventsSectionProps> = ({ events }) => {
+export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading }) => {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [selectedEvent, setSelectedEvent] = useState<ChurchEvent | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -54,7 +55,19 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events }) => {
 
       {/* EVENTS CARDS GRID - DITO NAGDI-DISPLAY ANG MGA EVENTS */}
       <div className="events-grid">
-        {events.length === 0 ? (
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="event-card animate-pulse">
+              <div className="w-full h-44 bg-gray-200 dark:bg-white/10" />
+              <div className="event-card-content space-y-3">
+                <div className="h-3 w-1/3 bg-gray-200 dark:bg-white/10 rounded-full" />
+                <div className="h-5 w-2/3 bg-gray-200 dark:bg-white/10 rounded-full" />
+                <div className="h-3 w-full bg-gray-200 dark:bg-white/10 rounded-full" />
+                <div className="h-3 w-5/6 bg-gray-200 dark:bg-white/10 rounded-full" />
+              </div>
+            </div>
+          ))
+        ) : events.length === 0 ? (
           <div className="col-span-full text-center py-12 bg-white dark:bg-[#1A1A1A] rounded-3xl border border-gray-200 dark:border-white/10">
             <p className="text-gray-500 dark:text-[#A1A1A1]">No events yet. Check back soon for upcoming gatherings and activities.</p>
           </div>
