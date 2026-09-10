@@ -26,6 +26,42 @@ import { bootstrapContent, createRecord, deleteRecord, getActivityStream, getCon
 // Get API URL from environment or use localhost as fallback
 const API_URL = (import.meta.env.API_URL || import.meta.env.VITE_API_URL || 'https://gfc-admin-rosy.vercel.app').replace(/\/$/, '');
 
+interface CachedContent {
+  events: ChurchEvent[];
+  sermons: Sermon[];
+  prayers: PrayerRequest[];
+  attendees: Attendee[];
+  members: Member[];
+  announcements: Announcement[];
+  testimonials: Testimonial[];
+}
+
+const CACHE_KEY = 'gfc_content_cache_v1';
+
+function loadCachedContent(): CachedContent | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CachedContent;
+    if (!parsed || !Array.isArray(parsed.events) || parsed.events.length === 0) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function saveCachedContent(content: CachedContent): void {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(content));
+  } catch {
+    // Ignore storage failures (private mode, quota, etc.)
+  }
+}
+
+// Instant first paint on refresh: reuse the last-good data from cache so
+// events appear immediately in the stable server order (no loading flash).
+const initialCache = loadCachedContent();
+
 export default function App() {
   // Theme & Accessibility State
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -39,20 +75,20 @@ export default function App() {
   });
 
   // Data State
-  const [events, setEvents] = useState<ChurchEvent[]>(DEFAULT_EVENTS);
-  const [sermons, setSermons] = useState<Sermon[]>(DEFAULT_SERMONS);
-  const [prayers, setPrayers] = useState<PrayerRequest[]>(DEFAULT_PRAYERS);
-  const [attendees, setAttendees] = useState<Attendee[]>(DEFAULT_ATTENDEES);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>(DEFAULT_ANNOUNCEMENTS);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(DEFAULT_TESTIMONIALS);
+  const [events, setEvents] = useState<ChurchEvent[]>(initialCache?.events?.length ? initialCache.events : DEFAULT_EVENTS);
+  const [sermons, setSermons] = useState<Sermon[]>(initialCache?.sermons?.length ? initialCache.sermons : DEFAULT_SERMONS);
+  const [prayers, setPrayers] = useState<PrayerRequest[]>(initialCache?.prayers?.length ? initialCache.prayers : DEFAULT_PRAYERS);
+  const [attendees, setAttendees] = useState<Attendee[]>(initialCache?.attendees?.length ? initialCache.attendees : DEFAULT_ATTENDEES);
+  const [members, setMembers] = useState<Member[]>(initialCache?.members || []);
+  const [announcements, setAnnouncements] = useState<Announcement[]>(initialCache?.announcements?.length ? initialCache.announcements : DEFAULT_ANNOUNCEMENTS);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(initialCache?.testimonials?.length ? initialCache.testimonials : DEFAULT_TESTIMONIALS);
 
   /*
-   * True once the FIRST remote fetch settles. Until then we show a
-   * loading state so the event cards render exactly ONCE in the stable
-   * server order (no DEFAULT -> remote jump/reorder on every refresh).
+   * True once we have something to render (cached data on refresh, or the
+   * first remote fetch settles). While false we show a loading state so the
+   * event cards render exactly once in the stable server order.
    */
-  const [dataHydrated, setDataHydrated] = useState(false);
+  const [dataHydrated, setDataHydrated] = useState(!!initialCache);
 
   const defaultContent = {
     events: DEFAULT_EVENTS, 
@@ -151,13 +187,26 @@ export default function App() {
 
         // Keep the same array order as the backend so the cards
         // always render in the same position after refresh.
-        setEvents(remote.events.length > 0 ? remote.events : DEFAULT_EVENTS);
-        setSermons(remote.sermons.length > 0 ? remote.sermons : DEFAULT_SERMONS);
-        setPrayers(remote.prayers.length > 0 ? remote.prayers : DEFAULT_PRAYERS);
-        setAttendees(remote.attendees.length > 0 ? remote.attendees : DEFAULT_ATTENDEES);
-        setMembers(remote.members || []);
-        setAnnouncements(remote.announcements.length > 0 ? remote.announcements : DEFAULT_ANNOUNCEMENTS);
-        setTestimonials(remote.testimonials.length > 0 ? remote.testimonials : DEFAULT_TESTIMONIALS);
+        const effective: CachedContent = {
+          events: remote.events.length > 0 ? remote.events : DEFAULT_EVENTS,
+          sermons: remote.sermons.length > 0 ? remote.sermons : DEFAULT_SERMONS,
+          prayers: remote.prayers.length > 0 ? remote.prayers : DEFAULT_PRAYERS,
+          attendees: remote.attendees.length > 0 ? remote.attendees : DEFAULT_ATTENDEES,
+          members: remote.members || [],
+          announcements: remote.announcements.length > 0 ? remote.announcements : DEFAULT_ANNOUNCEMENTS,
+          testimonials: remote.testimonials.length > 0 ? remote.testimonials : DEFAULT_TESTIMONIALS
+        };
+
+        setEvents(effective.events);
+        setSermons(effective.sermons);
+        setPrayers(effective.prayers);
+        setAttendees(effective.attendees);
+        setMembers(effective.members);
+        setAnnouncements(effective.announcements);
+        setTestimonials(effective.testimonials);
+
+        // Remember the last good data so the next refresh paints instantly.
+        saveCachedContent(effective);
 
       } catch (error) {
         console.error('GFC-DATA backend unavailable; using local defaults.', error);

@@ -522,7 +522,7 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     location: '📍 Gospel Fellowship Church Main Sanctuary',
     defaultVerse: 'I will bless the Lord at all times; His praise shall continually be in my mouth.',
     defaultVerseRef: 'Psalm 34:1',
-    image: '/Anniversary/3rd Year.jpg',
+    image: '/image-circle.png',
     dateEntries: [
       {
         date: '1st Year Anniversary',
