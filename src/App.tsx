@@ -41,7 +41,7 @@ interface CachedContent {
   testimonials: Testimonial[];
 }
 
-const CACHE_KEY = 'gfc_content_cache_v1';
+const CACHE_KEY = 'gfc_content_cache_v2';
 
 function loadCachedContent(): CachedContent | null {
   try {
