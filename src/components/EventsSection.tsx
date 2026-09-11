@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChurchEvent, DateEntry } from '../types';
 import { MapPin, Clock, X } from 'lucide-react';
-import { getConcreteDateEntries } from '../utils/dateEntries';
+import { getAlbumEntries } from '../utils/dateEntries';
 
 interface EventsSectionProps {
   events: ChurchEvent[];
@@ -113,9 +113,9 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                       </div>
                     )}
 
-                    {getConcreteDateEntries(ev.dateEntries).length > 0 && (
+                    {getAlbumEntries(ev).length > 0 && (
                       <div className="mt-2 text-xs text-indigo-500 dark:text-indigo-400 font-bold">
-                        📸 {getConcreteDateEntries(ev.dateEntries).length} photo album(s)
+                        📸 {getAlbumEntries(ev).length} photo album(s)
                       </div>
                     )}
                   </div>
@@ -174,10 +174,10 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                 </h4>
               </div>
               
-              {getConcreteDateEntries(selectedEvent.dateEntries).length > 0 ? (
+              {getAlbumEntries(selectedEvent).length > 0 ? (
                 <>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {getConcreteDateEntries(selectedEvent.dateEntries).map((entry, index) => (
+                    {getAlbumEntries(selectedEvent).map((entry, index) => (
                       <div
                         key={index}
                         onClick={() => setDatePhotoModal(entry)}
@@ -214,7 +214,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
               )}
             </div>
 
-            {selectedEvent.defaultVerse && getConcreteDateEntries(selectedEvent.dateEntries).length === 0 && (
+            {selectedEvent.defaultVerse && getAlbumEntries(selectedEvent).length === 0 && (
               <div className="bg-gray-50 dark:bg-[#0A0A14] p-5 rounded-xl border-l-4 border-indigo-400 dark:border-indigo-400/70 mt-4">
                 <p className="text-sm italic text-black dark:text-[#E8E8F0] leading-relaxed">
                   "{selectedEvent.defaultVerse}"

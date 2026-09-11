@@ -103,6 +103,7 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     defaultVerse: 'I will bless the Lord at all times; His praise shall continually be in my mouth.',
     defaultVerseRef: 'Psalm 34:1',
     image: '/image-circle.png',
+    albumType: 'year',
     dateEntries: [
     ]
   }

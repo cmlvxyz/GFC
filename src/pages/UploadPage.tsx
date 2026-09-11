@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Upload, Image, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { getConcreteDateEntries } from '../utils/dateEntries';
+import { getAlbumEntries } from '../utils/dateEntries';
 
 const IMAGE_FALLBACK =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" font-family="sans-serif" font-size="12" fill="%23999"%3ENo image%3C/text%3E%3C/svg%3E';
@@ -15,7 +15,12 @@ interface UploadPageProps {
 export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
   const [searchParams] = useSearchParams();
   const eventId = searchParams.get('event') || '';
-  const dateIndex = parseInt(searchParams.get('date') || '0', 10);
+  const rawDateParam = searchParams.get('date') || '';
+  const isNumericDate = /^\d+$/.test(rawDateParam);
+  const [dateIndex, setDateIndex] = useState<number>(
+    isNumericDate ? parseInt(rawDateParam, 10) : -1
+  );
+  const [dateLabel, setDateLabel] = useState('');
   
   const [eventTitle, setEventTitle] = useState('');
   const [dateTitle, setDateTitle] = useState('');
@@ -43,10 +48,26 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
         
         if (event) {
           setEventTitle(event.title);
-          const entries = getConcreteDateEntries(event.dateEntries);
-          const entry = entries[dateIndex];
+          const entries = getAlbumEntries(event);
+          let entryIndex = dateIndex;
+          if (!isNumericDate) {
+            entryIndex = entries.findIndex(
+              e =>
+                String(e.date).replace(/\s+/g, '').toLowerCase() ===
+                rawDateParam.replace(/\s+/g, '').toLowerCase()
+            );
+          }
+          const entry = entryIndex >= 0 ? entries[entryIndex] : undefined;
           if (entry) {
-            setDateTitle(entry.date || `Album ${dateIndex + 1}`);
+            setDateTitle(entry.date || `Album ${entryIndex + 1}`);
+            setDateLabel(entry.date || '');
+            if (entryIndex !== dateIndex) {
+              setDateIndex(entryIndex);
+            }
+          } else {
+            setDateTitle('');
+            setDateLabel('');
+            setErrorMessage('Hindi mahanap ang album na ito. Pakisuri ang iyong QR code.');
           }
           // Set the upload URL
           setUploadUrl(`${apiUrl}/api/uploads`);
@@ -91,6 +112,10 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
       setErrorMessage('Event ID is missing. Please use a valid QR code.');
       return;
     }
+    if (dateIndex < 0) {
+      setErrorMessage('Invalid album. Please use a valid QR code.');
+      return;
+    }
 
     setIsUploading(true);
     setUploadStatus('loading');
@@ -116,6 +141,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
         body: JSON.stringify({
           image: base64Image,
           eventId: eventId,
+          date: dateLabel || undefined,
           dateIndex: dateIndex,
         }),
       });
