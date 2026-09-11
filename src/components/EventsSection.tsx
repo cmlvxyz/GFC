@@ -162,17 +162,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
               )}
             </div>
 
-            <p className="text-gray-700 dark:text-[#E8E8F0] leading-relaxed text-sm mb-4">
-              {selectedEvent.description}
-            </p>
-
             {/* PAST EVENTS / DATE ENTRIES SECTION */}
             <div className="my-5">
-              <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-2 mb-3">
-                <h4 className="text-sm font-bold text-indigo-500 dark:text-indigo-400">
-                  📅 Past Events & Photo Albums
-                </h4>
-              </div>
               
               {getAlbumEntries(selectedEvent).length > 0 ? (
                 <>
@@ -183,17 +174,13 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                         onClick={() => setDatePhotoModal(entry)}
                         className="relative group flex flex-col items-center cursor-pointer gap-1.5 p-2 rounded-xl transition-all bg-gray-100 dark:bg-[#0A0A14] border-2 border-transparent hover:border-indigo-300 dark:hover:border-indigo-400/50 hover:scale-105"
                       >
-                        {entry.photos && entry.photos.length > 0 ? (
+                        {entry.photos && entry.photos.length > 0 && (
                           <img
                             src={entry.photos[0]}
                             alt={entry.date}
                             className="w-full h-20 object-cover rounded-xl shadow-md"
                             loading="lazy"
                           />
-                        ) : (
-                          <div className="w-full h-20 bg-gray-200 dark:bg-slate-700 rounded-xl flex items-center justify-center text-2xl">
-                            📅
-                          </div>
                         )}
                         <span className="text-[11px] font-bold text-center block mt-1 text-black dark:text-[#E8E8F0]">
                           {entry.date}
@@ -279,7 +266,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
             )}
 
             {datePhotoModal.photos && datePhotoModal.photos.length > 0 ? (
-              <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
                 {datePhotoModal.photos.map((photo, idx) => (
                   <div
                     key={idx}
