@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Upload, Image, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { getConcreteDateEntries } from '../utils/dateEntries';
 
 const IMAGE_FALLBACK =
   'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" font-family="sans-serif" font-size="12" fill="%23999"%3ENo image%3C/text%3E%3C/svg%3E';
@@ -42,7 +43,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({ apiUrl }) => {
         
         if (event) {
           setEventTitle(event.title);
-          const entries = event.dateEntries || [];
+          const entries = getConcreteDateEntries(event.dateEntries);
           const entry = entries[dateIndex];
           if (entry) {
             setDateTitle(entry.date || `Album ${dateIndex + 1}`);
