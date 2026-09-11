@@ -63,6 +63,29 @@ const ordinalOf = (value: unknown): number => {
 const keyOf = (value: unknown): string =>
   String(value ?? '').trim().toLowerCase().replace(/\s+/g, '');
 
+// Facebook CDN photo URLs change their signed query params (oh/oe/_nc_*)
+// on every import, so the same photo can appear under several different
+// strings inside an album. Collapse to the pathname so it renders once.
+const isFacebookCdnUrl = (url: unknown): boolean =>
+  typeof url === 'string' &&
+  /^https:\/\/scontent-[\w.-]+\.(fbcdn|facebook)\.net\//.test(url);
+
+const canonicalPhotoKey = (url: unknown): string =>
+  typeof url === 'string' && isFacebookCdnUrl(url)
+    ? url.split('?')[0]
+    : String(url ?? '').trim();
+
+export const uniquePhotos = (
+  photos?: string[] | null
+): string[] => {
+  const seen = new Set<string>();
+  for (const url of Array.isArray(photos) ? photos : []) {
+    const key = canonicalPhotoKey(url);
+    if (!seen.has(key)) seen.add(key);
+  }
+  return Array.from(seen.values());
+};
+
 /**
  * Return only real calendar date albums (e.g. "August 30, 2026"),
  * excluding recurring schedules like "Every Monday 7:00 PM",
@@ -96,8 +119,14 @@ export const getAlbumEntries = (
     ? event.dateEntries
     : [];
 
+  const deduped = entries.map(entry =>
+    Array.isArray(entry.photos)
+      ? { ...entry, photos: uniquePhotos(entry.photos) }
+      : entry
+  );
+
   if (isYearAlbumEvent(event)) {
-    return entries
+    return deduped
       .filter(entry => !isScheduleEntry(entry.date))
       .sort(
         (a, b) =>
@@ -106,5 +135,5 @@ export const getAlbumEntries = (
       );
   }
 
-  return getConcreteDateEntries(entries);
+  return getConcreteDateEntries(deduped);
 };
