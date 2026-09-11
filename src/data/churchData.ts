@@ -43,19 +43,6 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     ]
   },
   {
-    id: 'worship',
-    title: 'Worship Night',
-    date: 'Every Friday • 7:00 PM',
-    tag: '🎵 Music',
-    description: 'A dedicated evening of intimate praise, prayer, and acoustic worship.',
-    location: '📍 Gospel Fellowship Church Sanctuary',
-    defaultVerse: 'Sing to the Lord a new song; sing to the Lord, all the earth.',
-    defaultVerseRef: 'Psalm 96:1',
-    image: '/Worship Night/worship-night.jpg',
-    dateEntries: [
-    ]
-  },
-  {
     id: 'prayer',
     title: 'Prayer Meeting',
     date: 'Every Monday • 7:00 PM',
@@ -82,16 +69,17 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     ]
   },
   {
-    id: 'youth',
-    title: 'Next Generation Youth',
-    date: 'Every Sunday • 7:00 PM',
-    tag: '🌟 Youth',
-    description: 'Fellowship, games, worship, and Bible discussions tailored specifically for students and young adults.',
-    location: '📍 Gospel Fellowship Church Youth Hall',
-    defaultVerse: 'Let no one despise your youth, but set the believers an example.',
-    defaultVerseRef: '1 Timothy 4:12',
-    image: '/Next Gen/next-gen.jpg',
-    dateEntries: []
+    id: 'worship',
+    title: 'Worship Night',
+    date: 'Every Friday • 7:00 PM',
+    tag: '🎵 Music',
+    description: 'A dedicated evening of intimate praise, prayer, and acoustic worship.',
+    location: '📍 Gospel Fellowship Church Sanctuary',
+    defaultVerse: 'Sing to the Lord a new song; sing to the Lord, all the earth.',
+    defaultVerseRef: 'Psalm 96:1',
+    image: '/Worship Night/worship-night.jpg',
+    dateEntries: [
+    ]
   },
   {
     id: 'anniversary',
@@ -106,6 +94,30 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     albumType: 'year',
     dateEntries: [
     ]
+  },
+  {
+    id: 'youth',
+    title: 'Next Generation Youth',
+    date: 'Every Sunday • 7:00 PM',
+    tag: '🌟 Youth',
+    description: 'Fellowship, games, worship, and Bible discussions tailored specifically for students and young adults.',
+    location: '📍 Gospel Fellowship Church Youth Hall',
+    defaultVerse: 'Let no one despise your youth, but set the believers an example.',
+    defaultVerseRef: '1 Timothy 4:12',
+    image: '/Next Gen/next-gen.jpg',
+    dateEntries: []
+  },
+  {
+    id: 'gospel-network',
+    title: 'Gospel Network',
+    date: '',
+    tag: 'OBEDIENCE',
+    description: '',
+    location: '',
+    defaultVerse: '',
+    defaultVerseRef: '',
+    image: '/image-circle.png',
+    dateEntries: []
   }
 ];
 
