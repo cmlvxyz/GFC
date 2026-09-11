@@ -112,7 +112,7 @@ export const DEFAULT_EVENTS: ChurchEvent[] = [
     title: 'Gospel Network',
     date: '',
     tag: 'OBEDIENCE',
-    description: '',
+    description: 'Your willingness to obey and Love others',
     location: '',
     defaultVerse: '',
     defaultVerseRef: '',
