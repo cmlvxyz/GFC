@@ -245,14 +245,14 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                             onClick={() => setSelectedDate(entry)}
                             className="relative group flex flex-col items-center cursor-pointer gap-1.5 p-2 rounded-xl transition-all bg-gray-100 dark:bg-[#0A0A14] border-2 border-transparent hover:border-indigo-300 dark:hover:border-indigo-400/50 hover:scale-105"
                           >
-                            {entry.photos && entry.photos.length > 0 && (
-                              <img
-                                src={entry.photos[0]}
-                                alt={entry.date}
-                                className="w-full h-20 object-cover rounded-xl shadow-md"
-                                loading="lazy"
-                              />
-                            )}
+{entry.coverImage || (entry.photos && entry.photos.length > 0) && (
+                          <img
+                            src={entry.coverImage || entry.photos[0]}
+                            alt={entry.date}
+                            className="w-full h-20 object-cover rounded-xl shadow-md"
+                            loading="lazy"
+                          />
+                        )}
                             <span className="text-[11px] font-bold text-center block mt-1 text-black dark:text-[#E8E8F0]">
                               {entry.date}
                             </span>

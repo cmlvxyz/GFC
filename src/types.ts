@@ -5,6 +5,7 @@ export interface DateEntry {
   photos: string[];
   verse?: string;
   verseRef?: string;
+  coverImage?: string;
 }
 
 export interface ChurchEvent {
