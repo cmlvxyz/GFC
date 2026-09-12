@@ -245,7 +245,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                             onClick={() => setSelectedDate(entry)}
                             className="relative group flex flex-col items-center cursor-pointer gap-1.5 p-2 rounded-xl transition-all bg-gray-100 dark:bg-[#0A0A14] border-2 border-transparent hover:border-indigo-300 dark:hover:border-indigo-400/50 hover:scale-105"
                           >
-{entry.coverImage || (entry.photos && entry.photos.length > 0) && (
+{(entry.coverImage || (entry.photos && entry.photos.length > 0)) && (
                           <img
                             src={entry.coverImage || entry.photos[0]}
                             alt={entry.date}
