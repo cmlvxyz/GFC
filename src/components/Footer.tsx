@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative -top-130 bg-none dark:bg-[#0A0A0A] text-gray-600 dark:text-[#A1A1A1] pt-16 pb-12 border-t border-none transition-colors">
+    <footer className="relative -mt-130 bg-none dark:bg-[#0A0A0A] text-gray-600 dark:text-[#A1A1A1] pt-16 pb-12 border-t border-none transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
               <li><a href="#homeSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Home</a></li>
               <li><a href="#aboutSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">About Us</a></li>
               <li><a href="#eventsSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Events & Schedule</a></li>
-              <li><a href="#sermonsSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Sermon Audio</a></li>
+              <li><a href="#verseSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Verse of the Day</a></li>
               <li><a href="#prayerSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Prayer Request</a></li>
               <li><a href="#contactSection" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Contact & Location</a></li>
             </ul>

@@ -113,7 +113,7 @@ export default function App() {
   // INTERSECTION OBSERVER - Auto-detect active section on scroll
   // ============================================
   useEffect(() => {
-    const sectionIds = ['homeSection', 'aboutSection', 'eventsSection', 'sermonsSection', 'prayerSection', 'contactSection'];
+    const sectionIds = ['homeSection', 'aboutSection', 'eventsSection', 'verseSection', 'prayerSection', 'contactSection'];
     
     const observers = sectionIds.map((id) => {
       const element = document.getElementById(id);
@@ -426,7 +426,7 @@ export default function App() {
                   onOpenPrayerModal={() => scrollToSection('prayerSection')}
                   onOpenGiveModal={() => setGiveModalOpen(true)}
                   onOpenGetStarted={() => scrollToSection('aboutSection')}
-                  onNavigateToSermons={() => scrollToSection('sermonsSection')}
+                  onNavigateToSermons={() => scrollToSection('verseSection')}
                   onNavigateToEvents={() => scrollToSection('eventsSection')}
                 />
 

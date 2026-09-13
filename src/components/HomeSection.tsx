@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, MapPin, Heart, Headphones, Calendar, ArrowRight, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Clock, MapPin, Heart, BookOpen, Calendar, ArrowRight, ShieldCheck, ChevronRight } from 'lucide-react';
 
 interface HomeSectionProps {
   onOpenPrayerModal: () => void;
@@ -165,8 +165,8 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               onClick={onNavigateToSermons}
               className="px-6 py-4 rounded-[45px] bg-gray-200/80 hover:bg-gray-300/80 dark:bg-white/10 dark:hover:bg-white/20 text-black dark:text-white font-bold text-sm sm:text-base border border-gray-300 dark:border-white/10 backdrop-blur-md transition-all flex items-center gap-2 min-h-[48px]"
             >
-              <Headphones className="w-5 h-5 text-indigo-400" />
-              <span>Sermon Audio</span>
+              <BookOpen className="w-5 h-5 text-indigo-400" />
+              <span>Verse of the Day</span>
             </button>
 
             <button

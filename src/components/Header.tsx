@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
     { href: '#homeSection', label: 'Home', id: 'homeSection' },
     { href: '#aboutSection', label: 'About', id: 'aboutSection' },
     { href: '#eventsSection', label: 'Events', id: 'eventsSection' },
-    { href: '#sermonsSection', label: 'Sermons', id: 'sermonsSection' },
+    { href: '#verseSection', label: 'Verse', id: 'verseSection' },
     { href: '#prayerSection', label: 'Prayer', id: 'prayerSection' },
     { href: '#contactSection', label: 'Contact', id: 'contactSection' }
   ];
@@ -156,10 +156,13 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Dropdown Menu (shadcn-style) */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 lg:hidden bg-white dark:bg-black/95 space-y-3 p-4 rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl z-50">
-          <nav className="flex flex-col gap-2">
+        <div className="absolute top-full right-0 mt-2 w-48 lg:hidden overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1A1A1A] p-1 text-gray-800 dark:text-[#F5F5F5] shadow-2xl z-50">
+          <div className="px-2 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#A1A1A1]">
+            Menu
+          </div>
+          <nav className="flex flex-col">
             {navLinks.map(link => {
               const isActive = activeSection === link.id;
               return (
@@ -171,39 +174,17 @@ export const Header: React.FC<HeaderProps> = ({
                     handleNavClick(e, link.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition-all ${
+                  className={`relative flex items-center px-2 py-2 text-sm rounded-lg transition-colors select-none ${
                     isActive
-                      ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold border-l-4 border-indigo-500 dark:border-indigo-400'
-                      : 'text-black dark:text-[#F5F5F5] hover:bg-gray-50 dark:hover:bg-white/5'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold'
+                      : 'hover:bg-indigo-50 dark:hover:bg-white/5'
                   }`}
                 >
-                  <span>{link.label}</span>
-                  <span className={`text-xs ${isActive ? 'text-indigo-500' : 'text-indigo-400'}`}>➔</span>
+                  {link.label}
                 </a>
               );
             })}
           </nav>
-
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenPrayerModal();
-              }}
-              className="px-3 py-2.5 bg-indigo-500 dark:bg-indigo-400 text-white rounded-xl text-xs font-bold text-center"
-            >
-              🙏 Prayer Request
-            </button>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenGiveModal();
-              }}
-              className="px-3 py-2.5 bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl text-xs font-bold text-center border border-gray-200 dark:border-white/10"
-            >
-              💝 Give / Offering
-            </button>
-          </div>
         </div>
       )}
     </header>
