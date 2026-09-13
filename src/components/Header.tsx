@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full relative border border-indigo-400 ${
+      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full border border-indigo-400 ${
         isDarkMode ? 'border-white/10' : 'border-indigo-400'
       } ${
         isScrolled

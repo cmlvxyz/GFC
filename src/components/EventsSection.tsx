@@ -174,19 +174,6 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, loading })
                   </p>
                 </div>
 
-                {selectedDate.verse && (
-                  <div className="bg-gray-50 dark:bg-[#0A0A14] p-5 rounded-xl border-l-4 border-indigo-400 dark:border-indigo-400/70 my-5">
-                    <p className="text-sm italic text-black dark:text-[#E8E8F0] leading-relaxed">
-                      "{selectedDate.verse}"
-                    </p>
-                    {selectedDate.verseRef && (
-                      <p className="text-right text-sm font-bold text-indigo-500 dark:text-indigo-400 mt-1">
-                        — {selectedDate.verseRef}
-                      </p>
-                    )}
-                  </div>
-                )}
-
                 {selectedDate.photos && selectedDate.photos.length > 0 ? (
                   <div className="grid grid-cols-3 gap-3">
                     {selectedDate.photos.map((photo, idx) => (
