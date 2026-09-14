@@ -95,22 +95,22 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
 
             {/* Primary CTAs */}
             <div
-              className="flex flex-wrap items-center justify-center gap-3.5 pt-2 animate-fadeUp"
+              className="flex flex-wrap items-center justify-center gap-2.5 pt-2 animate-fadeUp sm:gap-3.5"
               style={{ animationDelay: '0.55s' }}
             >
               <button
                 onClick={() => navigate('/contact')}
-                className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-base transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20"
+                className="group inline-flex items-center gap-2 px-3.5 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm sm:px-7 sm:py-4 sm:gap-2.5 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20"
               >
                 Plan a Visit
-                <ArrowRight className="w-4.5 h-4.5 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:w-4.5 sm:h-4.5" />
               </button>
 
               <button
                 onClick={() => navigate('/events')}
-                className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-sm sm:text-base border border-white/25 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-3.5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm sm:px-7 sm:py-4 sm:gap-2.5 border border-white/25 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
               >
-                <CalendarDays className="w-4.5 h-4.5" />
+                <CalendarDays className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" />
                 Upcoming Events
               </button>
             </div>
@@ -122,49 +122,30 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
           className="absolute bottom-5 left-0 right-0 z-10 px-4 sm:px-8 animate-fadeUp"
           style={{ animationDelay: '0.7s' }}
         >
-          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
-            {/* Next Service countdown */}
-            <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-4 py-3 sm:gap-4 sm:px-5 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm">
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/25 px-3 py-1 rounded-full">
-                <Clock className="w-3 h-3" />
-                Sunday · 8:30 AM
-              </span>
-              <span className="hidden sm:block h-4 w-px bg-white/20" />
-              <span className="flex items-center justify-center gap-2 sm:gap-3 text-white tabular-nums">
-                {countdownUnits.map(unit => (
-                  <span key={unit.label} className="flex items-baseline gap-1">
-                    <span className="font-serif text-base sm:text-xl font-semibold">
-                      {String(unit.value).padStart(2, '0')}
-                    </span>
-                    <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/50">
-                      {unit.label}
-                    </span>
-                  </span>
-                ))}
-              </span>
-            </div>
-
+          <div className="relative flex flex-col items-center justify-center gap-3">
+            {/* Service + Get Directions */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {/* Service dropdown */}
-            <div className="group relative">
+            <div className="group">
               <button
                 type="button"
                 onClick={() => setServiceOpen(prev => !prev)}
-                className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-sm sm:text-base border border-white/25 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
+                className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-[10px] sm:text-base sm:px-7 sm:py-4 sm:gap-2.5 border border-white/25 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
               >
                 Service
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-300 ${serviceOpen ? 'rotate-180' : ''}`}
+                  className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 ${serviceOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
               <div
-                className={`absolute left-1/2 -translate-x-1/2 top-full mt-3 w-72 rounded-2xl border border-white/25 bg-[#0f172a]/90 p-2 backdrop-blur-xl shadow-2xl shadow-black/40 transition-all duration-200 ${
+                className={`absolute left-1/2 -translate-x-1/2 top-full mt-3 w-60 rounded-2xl border border-white/25 bg-[#0f172a]/90 p-1.5 backdrop-blur-xl shadow-2xl shadow-black/40 transition-all duration-200 ${
                   serviceOpen
                     ? 'opacity-100 translate-y-0 pointer-events-auto'
                     : 'opacity-0 translate-y-1 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto'
                 }`}
               >
-                <div className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
+                <div className="px-3 pb-1 pt-2 text-left text-[9px] font-bold uppercase tracking-[0.25em] text-white/50">
                   Service Times
                 </div>
                 {schedule.map(item => (
@@ -172,15 +153,15 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
                     key={item.name}
                     type="button"
                     onClick={() => navigate('/events')}
-                    className="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl text-left hover:bg-white/10 transition-colors"
+                    className="w-full flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg text-left hover:bg-white/10 transition-colors"
                   >
-                    <span className="flex items-center gap-3">
-                      <span className="w-8 h-8 rounded-lg bg-indigo-500/30 text-indigo-300 flex items-center justify-center text-[10px] font-bold uppercase">
+                    <span className="flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-lg bg-indigo-500/30 text-indigo-300 flex items-center justify-center text-[9px] font-bold uppercase">
                         {item.day.slice(0, 3)}
                       </span>
-                      <span className="text-sm font-semibold text-white">{item.name}</span>
+                      <span className="text-xs font-semibold text-white">{item.name}</span>
                     </span>
-                    <span className="text-sm font-bold text-indigo-300">{item.time}</span>
+                    <span className="text-xs font-bold text-indigo-300">{item.time}</span>
                   </button>
                 ))}
               </div>
@@ -191,11 +172,33 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
               href={directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-base transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20"
+              className="group inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] sm:text-base sm:px-7 sm:py-4 sm:gap-2.5 transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20"
             >
               Get Directions
-              <ArrowRight className="w-4.5 h-4.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="w-3 h-3 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
+            </div>
+
+            {/* Next Service countdown */}
+            <div className="flex max-w-full items-center justify-center gap-x-2 px-2.5 py-2 sm:gap-x-4 sm:px-5 sm:py-3 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/25 px-3 py-1 rounded-full">
+                <Clock className="w-3 h-3" />
+                Sunday · 8:30 AM
+              </span>
+              <span className="hidden sm:block h-4 w-px bg-white/20" />
+              <span className="flex items-center justify-center gap-2 sm:gap-3 text-white tabular-nums">
+                {countdownUnits.map(unit => (
+                  <span key={unit.label} className="flex flex-col items-center leading-none gap-0.5 sm:flex-row sm:items-baseline sm:gap-1">
+                    <span className="font-serif text-sm sm:text-xl font-semibold">
+                      {String(unit.value).padStart(2, '0')}
+                    </span>
+                    <span className="text-[7px] uppercase tracking-widest text-white/50 sm:text-[10px]">
+                      {unit.label}
+                    </span>
+                  </span>
+                ))}
+              </span>
+            </div>
           </div>
         </div>
       </div>

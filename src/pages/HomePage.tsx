@@ -58,6 +58,39 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
     <main>
       <HomeSection onOpenGiveModal={onOpenGiveModal} />
 
+      {/* ============ WELCOME ============ */}
+      <section className="bg-white overflow-hidden">
+        <div className="py-16 sm:py-20 overflow-hidden whitespace-nowrap group">
+          <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
+            {[0, 4].map(group => (
+              <div key={group} className="flex shrink-0" aria-hidden={group === 1}>
+                
+                {/* SOLID VERSION (Itim na buo) */}
+                <div className="shrink-0 px-6 sm:px-10 flex flex-col justify-center items-center space-y-2">
+                  <span className="block font-heading font-black leading-none tracking-tighter text-6xl sm:text-4xl lg:text-4xl text-black uppercase">
+                    WELCOME
+                  </span>
+                  <span className="block font-heading font-bold leading-none tracking-tight text-xl sm:text-4xl lg:text-4xl text-black uppercase">
+                    Gospel Fellowship Church
+                  </span>
+                </div>
+
+                {/* OUTLINE VERSION - manipis na stroke */}
+                <div className="shrink-0 px-6 sm:px-10 flex flex-col justify-center items-center space-y-2">
+                  <span className="block font-heading font-normal leading-none tracking-tighter text-6xl sm:text-4xl lg:text-4xl text-transparent uppercase [-webkit-text-stroke:1px_black]">
+                    WELCOME
+                  </span>
+                  <span className="block font-heading font-normal leading-none tracking-tight text-xl sm:text-4xl lg:text-4xl text-transparent uppercase [-webkit-text-stroke:1px_black]">
+                    Gospel Fellowship Church
+                  </span>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ============ JOURNEY TILES ============ */}
       <section className="bg-slate-50">
         <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

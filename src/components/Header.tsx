@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
           onClick={closeMobile}
           className="flex items-center gap-3 group shrink-0"
         >
-<div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-1 ring-white/25 shadow-md bg-white/90 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-1 ring-white/25 shadow-md bg-white/90 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
             <img
               src="/logo.png"
               alt="Gospel Fellowship Church Logo"
@@ -90,17 +90,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
         >
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
-      </div>
 
-      {/* Mobile Menu Panel */}
-      <div
-        className={`lg:hidden absolute top-full inset-x-0 origin-top transition-all duration-300 ${
-          mobileMenuOpen
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 -translate-y-2 pointer-events-none'
-        }`}
-      >
-        <div className="mx-3 mt-2 mb-4 rounded-2xl bg-[#0f172a] shadow-[0_24px_60px_-12px_rgba(15,23,42,0.5)] border border-white/10 overflow-hidden">
+        {/* Mobile Menu Panel */}
+        <div
+          className={`lg:hidden absolute top-full right-4 sm:right-6 z-50 origin-top-right transition-all duration-300 ${
+            mobileMenuOpen
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+        >
+          <div className="-mt-2 w-35 rounded-2xl bg-[#0f172a]/90 backdrop-blur-xl border border-white/25 shadow-2xl shadow-black/40 p-1.5">
           <nav className="flex flex-col">
             {navLinks.map(link => {
               const isActive = location.pathname === link.path;
@@ -109,28 +108,30 @@ export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
                   key={link.path}
                   to={link.path}
                   onClick={closeMobile}
-                  className={`flex items-center justify-between px-5 py-4 text-base font-medium border-b border-white/10 last:border-b-0 transition-colors ${
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-indigo-400 bg-white/5 font-semibold'
-                      : 'text-white/80 hover:bg-white/5'
+                      ? 'text-indigo-400 bg-white/10 font-semibold'
+                      : 'text-white/80 hover:bg-white/10'
                   }`}
                 >
                   {link.label}
-                  <span className={`text-xs ${isActive ? 'text-indigo-400' : 'text-white/30'}`}>→</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />}
                 </Link>
               );
             })}
+            <div className="my-1 h-px bg-white/10" />
             <button
               onClick={() => {
                 closeMobile();
                 onOpenGiveModal();
               }}
-              className="flex items-center gap-2 px-5 py-4 text-base font-bold text-indigo-400 border-b border-white/10 transition-colors hover:bg-white/5"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-indigo-400 transition-colors hover:bg-white/10"
             >
-              <Heart className="w-4 h-4" />
+              <Heart className="w-3.5 h-3.5" />
               Give
             </button>
           </nav>
+          </div>
         </div>
       </div>
     </header>
