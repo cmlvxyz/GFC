@@ -9,6 +9,7 @@ interface HomeSectionProps {
 export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [serviceOpen, setServiceOpen] = useState(false);
 
   useEffect(() => {
     const setDays = (d: number) => setTimeLeft(prev => ({ ...prev, days: d }));
@@ -73,7 +74,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f1a2e] via-transparent to-[#0f1a2e]/40" />
 
         {/* Content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-36 pb-48 text-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-32 pb-60 sm:pb-48 text-center">
           <div className="max-w-3xl mx-auto space-y-7">
             {/* Eyebrow */}
             <div
@@ -123,19 +124,19 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
         >
           <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
             {/* Next Service countdown */}
-            <div className="inline-flex items-center gap-3 sm:gap-4 px-5 py-3 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm">
+            <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-4 py-3 sm:gap-4 sm:px-5 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm">
               <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/25 px-3 py-1 rounded-full">
                 <Clock className="w-3 h-3" />
                 Sunday · 8:30 AM
               </span>
               <span className="hidden sm:block h-4 w-px bg-white/20" />
-              <span className="flex items-center gap-2 sm:gap-3 text-white tabular-nums">
+              <span className="flex items-center justify-center gap-2 sm:gap-3 text-white tabular-nums">
                 {countdownUnits.map(unit => (
                   <span key={unit.label} className="flex items-baseline gap-1">
-                    <span className="font-serif text-lg sm:text-xl font-semibold">
+                    <span className="font-serif text-base sm:text-xl font-semibold">
                       {String(unit.value).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] uppercase tracking-widest text-white/50">
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/50">
                       {unit.label}
                     </span>
                   </span>
@@ -147,13 +148,22 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
             <div className="group relative">
               <button
                 type="button"
+                onClick={() => setServiceOpen(prev => !prev)}
                 className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-sm sm:text-base border border-white/25 backdrop-blur-sm transition-all duration-300 active:scale-[0.98]"
               >
                 Service
-                <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-300 ${serviceOpen ? 'rotate-180' : ''}`}
+                />
               </button>
 
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-72 rounded-2xl border border-white/25 bg-[#0f172a]/90 p-2 backdrop-blur-xl shadow-2xl shadow-black/40 opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
+              <div
+                className={`absolute left-1/2 -translate-x-1/2 top-full mt-3 w-72 rounded-2xl border border-white/25 bg-[#0f172a]/90 p-2 backdrop-blur-xl shadow-2xl shadow-black/40 transition-all duration-200 ${
+                  serviceOpen
+                    ? 'opacity-100 translate-y-0 pointer-events-auto'
+                    : 'opacity-0 translate-y-1 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto'
+                }`}
+              >
                 <div className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
                   Service Times
                 </div>

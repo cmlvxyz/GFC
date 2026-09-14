@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
           onClick={closeMobile}
           className="flex items-center gap-3 group shrink-0"
         >
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-1 ring-white/25 shadow-md bg-white/90 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+<div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-1 ring-white/25 shadow-md bg-white/90 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
             <img
               src="/logo.png"
               alt="Gospel Fellowship Church Logo"
@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
             />
           </div>
           <span
-            className="font-serif tracking-tight text-white text-4xl lg:text-4xl leading-tight whitespace-nowrap"
+            className="font-serif tracking-tight text-white text-lg sm:text-3xl lg:text-2xl leading-tight whitespace-nowrap"
             style={{ fontFamily: "'Times New Roman', Times, serif" }}
           >
             Gospel <span className="text-indigo-400">Fellowship</span> Church
