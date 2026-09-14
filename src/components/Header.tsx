@@ -1,192 +1,138 @@
 // GFC/src/components/Header.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
-import { TextSizeLevel } from '../types';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Heart } from 'lucide-react';
 
 interface HeaderProps {
-  isDarkMode: boolean;
-  setIsDarkMode: (dark: boolean) => void;
-  textSize: TextSizeLevel;
-  setTextSize: (level: TextSizeLevel) => void;
-  onOpenPrayerModal: () => void;
   onOpenGiveModal: () => void;
-  onOpenGetStarted: () => void;
-  activeSection: string;
-  onNavigate: (sectionId: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  isDarkMode,
-  setIsDarkMode,
-  textSize,
-  setTextSize,
-  onOpenPrayerModal,
-  onOpenGiveModal,
-  onOpenGetStarted,
-  activeSection,
-  onNavigate
-}) => {
-  const [isScrolled, setIsScrolled] = useState(false);
+const navLinks = [
+  { path: '/', label: 'Home' },
+  { path: '/about', label: 'About' },
+  { path: '/events', label: 'Events' },
+  { path: '/verse', label: 'Verse' },
+  { path: '/prayer', label: 'Prayer' },
+  { path: '/contact', label: 'Contact' }
+];
+
+export const Header: React.FC<HeaderProps> = ({ onOpenGiveModal }) => {
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const closeMobile = () => setMobileMenuOpen(false);
 
-  const navLinks = [
-    { href: '#homeSection', label: 'Home', id: 'homeSection' },
-    { href: '#aboutSection', label: 'About', id: 'aboutSection' },
-    { href: '#eventsSection', label: 'Events', id: 'eventsSection' },
-    { href: '#verseSection', label: 'Verse', id: 'verseSection' },
-    { href: '#prayerSection', label: 'Prayer', id: 'prayerSection' },
-    { href: '#contactSection', label: 'Contact', id: 'contactSection' }
-  ];
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
-    e.preventDefault();
-    onNavigate(sectionId);
-    const elem = document.getElementById(sectionId);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const linkBase = 'relative text-sm font-medium tracking-wide py-1 transition-colors duration-300';
+  const linkColor = (isActive: boolean) => isActive ? 'text-indigo-400' : 'text-white/80 hover:text-white';
 
   return (
-    <header
-      className={`fixed top-10 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[1200px] rounded-full relative border border-indigo-400 ${
-        isDarkMode ? 'border-white/10' : 'border-indigo-400'
-      } ${
-        isScrolled
-          ? `py-2 px-4 sm:py-3 sm:px-8 ${isDarkMode ? 'bg-black/80 border-white/15' : 'bg-white/95 border-indigo-400'}`
-          : `py-2 px-4 sm:py-3 sm:px-8 ${isDarkMode ? 'bg-white/5' : 'bg-white/80'}`
-      }`}
-      role="banner"
-    >
-      <div className="flex items-center justify-between gap-4">
+    <header className="absolute inset-x-0 top-0 z-40">
+        <div className="max-w-7xl mx-auto flex items-center relative top-10 justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3.5">
         {/* Brand & Logo */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="flex-shrink-0">
-            <div className="w-9 h-9 sm:w-15 sm:h-15 rounded-full overflow-hidden border border-indigo-300 dark:border-indigo-400/50 shadow-md bg-indigo-50 dark:bg-black/60 flex items-center justify-center">
-              <img 
-                src="/image.png" 
-                alt="Gospel Fellowship Church Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
+        <Link
+          to="/"
+          onClick={closeMobile}
+          className="flex items-center gap-3 group shrink-0"
+        >
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-1 ring-white/25 shadow-md bg-white/90 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <img
+              src="/logo.png"
+              alt="Gospel Fellowship Church Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <a
-            href="#homeSection"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate('homeSection');
-              document.getElementById('homeSection')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="flex flex-col group"
+          <span
+            className="font-serif tracking-tight text-white text-4xl lg:text-4xl leading-tight whitespace-nowrap"
+            style={{ fontFamily: "'Times New Roman', Times, serif" }}
           >
-            <span className="text-xs sm:text-2xl font-serif tracking-tight whitespace-nowrap text-black dark:text-white">
-              Gospel <span className="text-indigo-500 dark:text-indigo-400">Fellowship</span> Church
-            </span>
-          </a>
-        </div>
+            Gospel <span className="text-indigo-400">Fellowship</span> Church
+          </span>
+        </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 p-1.5 px-6 rounded-full border border-none">
+        {/* Desktop Navigation - right side */}
+        <nav className="hidden lg:flex items-center gap-7">
           {navLinks.map(link => {
-            const isActive = activeSection === link.id;
+            const isActive = location.pathname === link.path;
             return (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.id)}
-                className={`relative text-sm font-medium py-1 transition-colors duration-300 ${
-                  isActive
-                    ? 'text-indigo-600 dark:text-indigo-400 font-bold'
-                    : 'text-gray-600 dark:text-[#A1A1A1] hover:text-indigo-500 dark:hover:text-indigo-400'
-                }`}
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`group ${linkBase} ${linkColor(isActive)}`}
               >
                 {link.label}
-                
-                {/* Animated Underline - Active only */}
                 <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-indigo-500 dark:bg-indigo-400 transition-all duration-300 ease-out ${
-                    isActive ? 'w-full' : 'w-0'
+                  className={`absolute -bottom-0.5 left-0 h-px bg-current transition-all duration-300 ease-out ${
+                    isActive ? 'w-0' : 'w-0 group-hover:w-full'
                   }`}
                 />
-              </a>
+              </Link>
             );
           })}
+
+          {/* Give - part of the navbar */}
+          <button
+            onClick={onOpenGiveModal}
+            className="group relative flex items-center gap-1.5 text-sm font-bold text-indigo-400 hover:text-white py-1 transition-colors duration-300"
+          >
+            <Heart className="w-4 h-4" />
+            Give
+            <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-current group-hover:w-full transition-all duration-300" />
+          </button>
         </nav>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2">
-          {/* Dark Mode Toggle Button */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="hidden sm:flex px-3 py-1.5 bg-gray-100 dark:bg-white/10 rounded-full items-center gap-2 border border-gray-200 dark:border-white/10 min-h-[38px]"
-            aria-label="Toggle dark mode"
-          >
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-black dark:text-indigo-400">
-              {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-            </span>
-            {isDarkMode ? <Sun className="w-3.5 h-3.5 text-indigo-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
-          </button>
-
-          {/* Mobile Dark Mode Toggle */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="flex sm:hidden p-2.5 bg-gray-100 dark:bg-white/10 rounded-full border border-gray-200 dark:border-white/10 min-h-[38px] min-w-[38px] items-center justify-center"
-            aria-label="Toggle dark mode"
-          >
-            {isDarkMode ? <Sun className="w-4 h-4 text-indigo-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
-          </button>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full bg-indigo-500 dark:bg-indigo-400 text-white min-h-[38px] min-w-[38px] flex items-center justify-center font-bold"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
+          className="lg:hidden w-11 h-11 flex items-center justify-center rounded-full bg-white/10 text-white border border-white/20 transition-all duration-300"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      {/* Mobile Dropdown Menu (shadcn-style) */}
-      {mobileMenuOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 lg:hidden overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1A1A1A] p-1 text-gray-800 dark:text-[#F5F5F5] shadow-2xl z-50">
-          <div className="px-2 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#A1A1A1]">
-            Menu
-          </div>
+      {/* Mobile Menu Panel */}
+      <div
+        className={`lg:hidden absolute top-full inset-x-0 origin-top transition-all duration-300 ${
+          mobileMenuOpen
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 -translate-y-2 pointer-events-none'
+        }`}
+      >
+        <div className="mx-3 mt-2 mb-4 rounded-2xl bg-[#0f172a] shadow-[0_24px_60px_-12px_rgba(15,23,42,0.5)] border border-white/10 overflow-hidden">
           <nav className="flex flex-col">
             {navLinks.map(link => {
-              const isActive = activeSection === link.id;
+              const isActive = location.pathname === link.path;
               return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(e, link.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`relative flex items-center px-2 py-2 text-sm rounded-lg transition-colors select-none ${
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={closeMobile}
+                  className={`flex items-center justify-between px-5 py-4 text-base font-medium border-b border-white/10 last:border-b-0 transition-colors ${
                     isActive
-                      ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold'
-                      : 'hover:bg-indigo-50 dark:hover:bg-white/5'
+                      ? 'text-indigo-400 bg-white/5 font-semibold'
+                      : 'text-white/80 hover:bg-white/5'
                   }`}
                 >
                   {link.label}
-                </a>
+                  <span className={`text-xs ${isActive ? 'text-indigo-400' : 'text-white/30'}`}>→</span>
+                </Link>
               );
             })}
+            <button
+              onClick={() => {
+                closeMobile();
+                onOpenGiveModal();
+              }}
+              className="flex items-center gap-2 px-5 py-4 text-base font-bold text-indigo-400 border-b border-white/10 transition-colors hover:bg-white/5"
+            >
+              <Heart className="w-4 h-4" />
+              Give
+            </button>
           </nav>
         </div>
-      )}
+      </div>
     </header>
   );
 };

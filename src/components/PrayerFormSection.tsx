@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PrayerRequest } from '../types';
-import { Heart, Send, CheckCircle2, ShieldCheck, Sparkles, MessageSquare, Users, Eye } from 'lucide-react';
+import { Heart, Send, CheckCircle2, ShieldCheck, MessageSquare, Users } from 'lucide-react';
 
 interface PrayerFormSectionProps {
   prayers: PrayerRequest[];
@@ -38,64 +38,68 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
   };
 
   return (
-    <section id="prayerSection" className="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-12 relative -top-100">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <span className="text-xs font-bold uppercase tracking-[0.3em] text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-white/5 px-4 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-400/30 inline-flex items-center gap-1.5">
-          <Heart className="w-4 h-4 fill-current text-indigo-400" />
-          <span>Prayer Request</span>
+    <section id="prayerSection" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-12">
+      {/* ============ HEADER ============ */}
+      <div className="text-center space-y-4">
+        <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.35em] text-indigo-600">
+          <Heart className="w-4 h-4 fill-current" />
+          Prayer Request
         </span>
-
-        <h2 className="text-3xl sm:text-5xl font-serif text-black dark:text-white">
+        <h2 className="text-4xl sm:text-5xl font-serif text-[#0f172a] tracking-tight leading-tight">
           Do You Have a Prayer Request?
         </h2>
-
-        <p className="text-sm sm:text-base text-gray-600 dark:text-[#A1A1A1] max-w-2xl mx-auto leading-relaxed">
-          The Gospel Fellowship Church Prayer Team is ready to pray with you. No request is too small or too big for our Lord.
+        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          The Gospel Fellowship Church Prayer Team is ready to pray with you. No request
+          is too small or too big for our Lord.
         </p>
       </div>
 
-      {/* Main Form Container */}
-      <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-white/10 shadow-xl dark:shadow-2xl space-y-6">
+      {/* ============ FORM ============ */}
+      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.12)] space-y-6">
         {isSubmitted ? (
           <div className="text-center py-8 space-y-4 animate-fadeIn">
-            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-400/20 text-indigo-500 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-400/30 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-[#0f172a] text-indigo-400 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
-            <h3 className="text-2xl font-serif text-black dark:text-white">
+            <h3 className="text-2xl font-serif text-[#0f172a]">
               Your Prayer Request Has Been Recorded!
             </h3>
 
-            <p className="text-sm sm:text-base text-gray-600 dark:text-[#A1A1A1] max-w-md mx-auto">
-              Thank you! Your request has been added to the Prayer Wall and the entire pastorate and prayer team will pray for you.
+            <p className="text-sm sm:text-base text-slate-600 max-w-md mx-auto">
+              Thank you! Your request has been added to the Prayer Wall and the entire
+              pastorate and prayer team will pray for you.
             </p>
 
-            <div className="p-4 rounded-2xl bg-indigo-50/60 dark:bg-black/50 border border-indigo-200 dark:border-indigo-400/30 text-xs sm:text-sm italic text-black dark:text-[#F5F5F5] max-w-lg mx-auto">
-              "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."
-              <span className="block font-bold not-italic mt-1 text-right text-indigo-500 dark:text-indigo-400">— Philippians 4:6</span>
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-sm italic text-slate-700 max-w-lg mx-auto">
+              "Do not be anxious about anything, but in every situation, by prayer and
+              petition, with thanksgiving, present your requests to God."
+              <span className="block font-bold not-italic mt-2 text-right text-indigo-600">
+                — Philippians 4:6
+              </span>
             </div>
 
             <button
               onClick={() => setIsSubmitted(false)}
-              className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-400 dark:hover:brightness-110 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-lg transition-all"
+              className="px-7 py-3 bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold text-sm rounded-xl transition-all"
             >
               Submit Another Prayer
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-indigo-50 dark:bg-white/5 p-4 rounded-2xl border border-indigo-200 dark:border-white/10 flex items-center gap-3 text-xs sm:text-sm text-black dark:text-[#F5F5F5]">
-              <ShieldCheck className="w-6 h-6 text-indigo-400 flex-shrink-0" />
+          <form onSubmit={handleSubmit} className="space-y-7">
+            <div className="flex items-start gap-3 text-sm text-slate-600 border border-slate-200 bg-slate-50/70 p-4 rounded-2xl">
+              <ShieldCheck className="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" />
               <span>
-                <strong className="text-indigo-500 dark:text-indigo-400">Safe & Easy to Use:</strong> You can provide your name or choose to remain confidential / anonymous.
+                <strong className="text-[#0f172a]">Safe & Easy to Use:</strong> You can
+                provide your name or choose to remain confidential / anonymous.
               </span>
             </div>
 
             {/* Category Selector */}
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#A1A1A1] mb-2">
-                Select Prayer Category:
+              <label className="block text-xs uppercase tracking-wider font-bold text-slate-700 mb-3">
+                Select Prayer Category
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {[
@@ -112,8 +116,8 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
                     onClick={() => setCategory(cat)}
                     className={`p-3 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between min-h-[44px] ${
                       category === cat
-                        ? 'bg-indigo-500 dark:bg-indigo-400 text-white border-indigo-500 dark:border-indigo-400 shadow-lg'
-                        : 'bg-gray-50 dark:bg-black/50 text-black dark:text-[#F5F5F5] border-gray-200 dark:border-white/10 hover:border-indigo-300 dark:hover:border-indigo-400/50'
+                        ? 'bg-[#0f172a] text-white border-[#0f172a] shadow-lg'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
                     }`}
                   >
                     <span>{cat}</span>
@@ -125,7 +129,7 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
 
             {/* Prayer Details Textarea */}
             <div>
-              <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#A1A1A1] mb-2">
+              <label className="block text-xs uppercase tracking-wider font-bold text-slate-700 mb-2">
                 Write Your Prayer Request Here *
               </label>
               <textarea
@@ -134,14 +138,14 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
                 value={request}
                 onChange={e => setRequest(e.target.value)}
                 placeholder="Example: Please pray for the health of my mother and for peace in our home..."
-                className="w-full p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/50 text-sm sm:text-base text-black dark:text-white focus:border-indigo-400 dark:focus:border-indigo-400/50 focus:outline-hidden"
+                className="w-full p-4 rounded-xl border border-slate-200 bg-white text-sm sm:text-base text-[#0f172a] placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
               />
             </div>
 
             {/* Name & Contact */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#A1A1A1] mb-1">
+                <label className="block text-xs uppercase tracking-wider font-bold text-slate-700 mb-1">
                   Name (Optional)
                 </label>
                 <input
@@ -150,12 +154,12 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/50 text-sm text-black dark:text-white disabled:opacity-30 focus:border-indigo-400 dark:focus:border-indigo-400/50 focus:outline-hidden"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-[#0f172a] placeholder:text-slate-400 disabled:opacity-30 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#A1A1A1] mb-1">
+                <label className="block text-xs uppercase tracking-wider font-bold text-slate-700 mb-1">
                   Contact No. / Facebook (Optional)
                 </label>
                 <input
@@ -164,7 +168,7 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
                   value={contact}
                   onChange={e => setContact(e.target.value)}
                   placeholder="e.g. 0912-345-6789"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/50 text-sm text-black dark:text-white disabled:opacity-30 focus:border-indigo-400 dark:focus:border-indigo-400/50 focus:outline-hidden"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-[#0f172a] placeholder:text-slate-400 disabled:opacity-30 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 focus:outline-none"
                 />
               </div>
             </div>
@@ -178,7 +182,7 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
                 onChange={e => setIsAnonymous(e.target.checked)}
                 className="w-5 h-5 accent-indigo-500 rounded cursor-pointer"
               />
-              <label htmlFor="anonymousCheck" className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-[#A1A1A1] cursor-pointer">
+              <label htmlFor="anonymousCheck" className="text-xs sm:text-sm font-semibold text-slate-600 cursor-pointer">
                 I prefer to remain Anonymous (Hide my name)
               </label>
             </div>
@@ -186,56 +190,62 @@ export const PrayerFormSection: React.FC<PrayerFormSectionProps> = ({ prayers, o
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-400 dark:hover:brightness-110 text-white font-extrabold uppercase tracking-widest text-xs sm:text-sm rounded-xl shadow-lg transition-all transform active:scale-98 flex items-center justify-center gap-2 min-h-[52px]"
+              className="w-full py-4 bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold uppercase tracking-widest text-xs sm:text-sm rounded-xl shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
             >
-              <Send className="w-5 h-5 text-white" />
+              <Send className="w-5 h-5" />
               <span>Submit Prayer Request</span>
             </button>
           </form>
         )}
       </div>
 
-      {/* Community Prayer Wall */}
-      <div className="space-y-6 pt-1">
+      {/* ============ COMMUNITY PRAYER WALL ============ */}
+      <div className="space-y-8 pt-2">
         <div className="text-center space-y-2">
-          <h3 className="text-2xl font-serif text-black dark:text-white flex items-center justify-center gap-2">
-            <Users className="w-6 h-6 text-indigo-400" />
-            <span>Community Prayer Wall</span>
+          <h3 className="text-2xl sm:text-3xl font-serif text-[#0f172a] flex items-center justify-center gap-2">
+            <Users className="w-6 h-6 text-indigo-500" />
+            Community Prayer Wall
           </h3>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-[#A1A1A1]">
+          <p className="text-sm text-slate-600">
             Let us also pray for the requests of our brothers and sisters in faith.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {prayers.map(p => (
-            <div
-              key={p.id}
-              className="bg-white dark:bg-[#1A1A1A] p-5 rounded-2xl border border-gray-200 dark:border-white/10 shadow-lg space-y-3 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-indigo-500 dark:text-indigo-400">
-                    🙏 {p.category || 'Prayer'}
-                  </span>
-                  <span className="text-gray-500 dark:text-[#A1A1A1]">{p.createdAt}</span>
+        {prayers.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <MessageSquare className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+            <p className="text-sm text-slate-500">No prayer requests yet. Be the first to lift one up.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {prayers.map(p => (
+              <div
+                key={p.id}
+                className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-300 transition-colors duration-300 space-y-4 flex flex-col justify-between"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="inline-flex items-center gap-1.5 font-bold text-indigo-600">
+                      <Heart className="w-3.5 h-3.5 fill-current" />
+                      {p.category || 'Prayer'}
+                    </span>
+                    <span className="text-slate-400">{p.createdAt}</span>
+                  </div>
+                  <p className="text-sm text-slate-800 italic font-medium leading-relaxed">
+                    "{p.request}"
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-black dark:text-[#F5F5F5] italic font-medium leading-relaxed">
-                  "{p.request}"
-                </p>
-              </div>
 
-              <div className="pt-2 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-xs">
-                <span className="font-bold text-gray-600 dark:text-[#A1A1A1]">
-                  — {p.name}
-                </span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                  ✓ Being Prayed For
-                </span>
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="font-bold text-slate-600">— {p.name}</span>
+                  <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                    ✓ Being Prayed For
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

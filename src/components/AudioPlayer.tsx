@@ -96,23 +96,23 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   if (!audioUrl) {
     return (
-      <div className="bg-slate-100 dark:bg-white/5 p-3 rounded-2xl text-xs text-slate-500 dark:text-[#A1A1A1] border border-slate-200 dark:border-white/10 text-center italic">
+      <div className="bg-slate-100 p-3 rounded-2xl text-xs text-slate-500 border border-slate-200 text-center italic">
         (Walang naka-attach na audio recording sa sermon na ito sa ngayon)
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-900 dark:bg-black/60 text-white p-5 rounded-2xl shadow-xl border border-amber-500/30 dark:border-[#D4AF37]/30 space-y-3">
+    <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-xl border border-amber-500/30 space-y-3">
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
 
       <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
         <div className="min-w-0">
-          <div className="text-[10px] text-amber-300 dark:text-[#D4AF37] font-bold uppercase tracking-[0.2em] flex items-center gap-1">
+          <div className="text-[10px] text-amber-300 font-bold uppercase tracking-[0.2em] flex items-center gap-1">
             🎧 Audio Recording ng Sermon
           </div>
           <div className="font-serif font-bold text-sm sm:text-base text-white truncate">{title}</div>
-          {speaker && <div className="text-xs text-slate-300 dark:text-[#A1A1A1]">{speaker} {date ? `• ${date}` : ''}</div>}
+          {speaker && <div className="text-xs text-slate-300">{speaker} {date ? `• ${date}` : ''}</div>}
         </div>
 
         {/* Speed presets for senior comfort */}
@@ -120,7 +120,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             onClick={() => changeSpeed(0.8)}
             className={`px-2 py-1 rounded-lg font-bold transition-all ${
-              playbackSpeed === 0.8 ? 'bg-[#D4AF37] text-black font-extrabold' : 'text-slate-300 dark:text-[#A1A1A1] hover:text-white'
+              playbackSpeed === 0.8 ? 'bg-indigo-500 text-indigo-100 font-extrabold' : 'text-slate-300 hover:text-white'
             }`}
             title="Mabagal para sa madaling pag-unawa (Seniors 0.8x)"
           >
@@ -129,7 +129,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             onClick={() => changeSpeed(1.0)}
             className={`px-2 py-1 rounded-lg font-bold transition-all ${
-              playbackSpeed === 1.0 ? 'bg-[#D4AF37] text-black font-extrabold' : 'text-slate-300 dark:text-[#A1A1A1] hover:text-white'
+              playbackSpeed === 1.0 ? 'bg-indigo-500 text-indigo-100 font-extrabold' : 'text-slate-300 hover:text-white'
             }`}
           >
             1x
@@ -137,7 +137,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             onClick={() => changeSpeed(1.2)}
             className={`px-2 py-1 rounded-lg font-bold transition-all ${
-              playbackSpeed === 1.2 ? 'bg-[#D4AF37] text-black font-extrabold' : 'text-slate-300 dark:text-[#A1A1A1] hover:text-white'
+              playbackSpeed === 1.2 ? 'bg-indigo-500 text-indigo-100 font-extrabold' : 'text-slate-300 hover:text-white'
             }`}
           >
             1.2x
@@ -153,7 +153,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           max={duration || 100}
           value={currentTime}
           onChange={handleSeek}
-          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
+          className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
         />
         <div className="flex justify-between text-xs text-[#A1A1A1] font-mono">
           <span>{formatTime(currentTime)}</span>
@@ -174,7 +174,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
           <button
             onClick={togglePlay}
-            className="w-12 h-12 rounded-full bg-[#D4AF37] hover:brightness-110 text-black font-bold flex items-center justify-center shadow-lg transition-all transform active:scale-95"
+            className="w-12 h-12 rounded-full bg-indigo-500 hover:brightness-110 text-white font-bold flex items-center justify-center shadow-lg transition-all transform active:scale-95"
             title={isPlaying ? "I-pause" : "I-play ang audio"}
           >
             {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-0.5" />}
@@ -202,7 +202,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               step="0.05"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-16 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
+              className="w-16 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
             />
           </div>
 
@@ -211,7 +211,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             download={`${title.replace(/\s+/g, '_')}_GospelFC.mp3`}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2.5 bg-white/10 hover:bg-[#D4AF37] hover:text-black text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-white/10"
+            className="p-2.5 bg-white/10 hover:bg-indigo-500 hover:text-white text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-white/10"
             title="I-download ang sermon audio file"
           >
             <Download className="w-3.5 h-3.5" />

@@ -1,7 +1,7 @@
 // GFC/src/App.tsx
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ChurchEvent, Sermon, PrayerRequest, Attendee, TextSizeLevel, Member, Announcement, Testimonial } from './types';
 import {
   DEFAULT_EVENTS,
@@ -12,14 +12,14 @@ import {
   DEFAULT_TESTIMONIALS
 } from './data/churchData';
 
-import { Header } from './components/Header';
-import { HomeSection } from './components/HomeSection';
-import { AboutSection } from './components/AboutSection';
-import { EventsSection } from './components/EventsSection';
-import { SermonsSection } from './components/SermonsSection';
-import { PrayerFormSection } from './components/PrayerFormSection';
-import { ContactSection } from './components/ContactSection';
-import { Footer } from './components/Footer';
+import { PublicLayout } from './components/PublicLayout';
+import { ScrollToTop } from './components/ScrollToTop';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { EventsPage } from './pages/EventsPage';
+import { VersePage } from './pages/VersePage';
+import { PrayerPage } from './pages/PrayerPage';
+import { ContactPage } from './pages/ContactPage';
 import { UploadPage } from './pages/UploadPage';
 import { bootstrapContent, createRecord, deleteRecord, getActivityStream, getContent, resetRemoteData, updateRecord } from './api';
 
@@ -68,12 +68,7 @@ function saveCachedContent(content: CachedContent): void {
 const initialCache = loadCachedContent();
 
 export default function App() {
-  // Theme & Accessibility State
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('gospelfc_darkmode');
-    return saved ? JSON.parse(saved) : true;
-  });
-
+  // Accessibility State
   const [textSize, setTextSize] = useState<TextSizeLevel>(() => {
     const saved = localStorage.getItem('gospelfc_textsize');
     return (saved as TextSizeLevel) || 'normal';
@@ -105,47 +100,8 @@ export default function App() {
     testimonials: DEFAULT_TESTIMONIALS
   };
 
-  // Modals & Active Section
+  // Give modal (available on every public page)
   const [giveModalOpen, setGiveModalOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('homeSection');
-
-  // ============================================
-  // INTERSECTION OBSERVER - Auto-detect active section on scroll
-  // ============================================
-  useEffect(() => {
-    const sectionIds = ['homeSection', 'aboutSection', 'eventsSection', 'verseSection', 'prayerSection', 'contactSection'];
-    
-    const observers = sectionIds.map((id) => {
-      const element = document.getElementById(id);
-      if (!element) return null;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(id);
-            }
-          });
-        },
-        {
-          root: null,
-          rootMargin: '-20% 0px -20% 0px',
-          threshold: 0.2,
-        }
-      );
-
-      observer.observe(element);
-      return observer;
-    });
-
-    return () => {
-      observers.forEach((observer) => {
-        if (observer) {
-          observer.disconnect();
-        }
-      });
-    };
-  }, []);
 
   // ============================================
   // LOAD DATA FROM BACKEND + AUTO-REFRESH
@@ -248,26 +204,16 @@ export default function App() {
   }, []);
 
   // ============================================
-  // DARK MODE SYNC
+  // THEME - Light only
   // ============================================
   useEffect(() => {
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
-    
-    if (isDarkMode) {
-      htmlElement.classList.add('dark');
-      bodyElement.classList.add('dark');
-      bodyElement.style.backgroundColor = '#0F0F0F';
-      bodyElement.style.color = '#F5F5F5';
-    } else {
-      htmlElement.classList.remove('dark');
-      bodyElement.classList.remove('dark');
-      bodyElement.style.backgroundColor = '#ffffff';
-      bodyElement.style.color = '#1a1a2e';
-    }
-    
-    localStorage.setItem('gospelfc_darkmode', JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    htmlElement.classList.remove('dark');
+    bodyElement.classList.remove('dark');
+    bodyElement.style.backgroundColor = '#ffffff';
+    bodyElement.style.color = '#1a1a2e';
+  }, []);
 
   // ============================================
   // TEXT SIZE PERSIST
@@ -377,14 +323,6 @@ export default function App() {
     window.location.reload();
   };
 
-  const scrollToSection = (id: string) => {
-    setActiveSection(id);
-    const elem = document.getElementById(id);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const fontScaleClass =
     textSize === 'extralarge'
       ? 'text-[118%] leading-relaxed tracking-wide'
@@ -397,67 +335,53 @@ export default function App() {
   // ============================================
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Upload Route - No Header/Footer, Simple Upload Page */}
         <Route
           path="/upload"
           element={<UploadPage apiUrl={API_URL} />}
         />
-        
-        {/* Main Website Routes - Lahat ng ibang route */}
+
+        {/* Public Website Routes - each navbar item is its own page */}
         <Route
-          path="/*"
           element={
-            <div className={`min-h-screen bg-white dark:bg-[#0F0F0F] text-slate-900 dark:text-[#F5F5F5] font-sans selection:bg-[#D4AF37] selection:text-black ${fontScaleClass}`}>
-              <Header
-                isDarkMode={isDarkMode}
-                setIsDarkMode={setIsDarkMode}
-                textSize={textSize}
-                setTextSize={setTextSize}
-                onOpenPrayerModal={() => scrollToSection('prayerSection')}
-                onOpenGiveModal={() => setGiveModalOpen(true)}
-                onOpenGetStarted={() => scrollToSection('aboutSection')}
-                activeSection={activeSection}
-                onNavigate={scrollToSection}
-              />
-
-              <main className="space-y-8">
-                <HomeSection
-                  onOpenPrayerModal={() => scrollToSection('prayerSection')}
-                  onOpenGiveModal={() => setGiveModalOpen(true)}
-                  onOpenGetStarted={() => scrollToSection('aboutSection')}
-                  onNavigateToSermons={() => scrollToSection('verseSection')}
-                  onNavigateToEvents={() => scrollToSection('eventsSection')}
-                />
-
-                <AboutSection />
-
-                <EventsSection
-                  events={events}
-                  loading={!dataHydrated}
-                />
-
-                <SermonsSection
-                  sermons={sermons}
-                  onAddSermon={handleAddSermon}
-                />
-
-                <PrayerFormSection
-                  prayers={prayers}
-                  onSubmitPrayer={handleAddPrayer}
-                />
-
-                <ContactSection
-                  onRegisterAttendee={handleRegisterAttendee}
-                  showGiveModal={giveModalOpen}
-                  setShowGiveModal={setGiveModalOpen}
-                />
-              </main>
-
-              <Footer />
-            </div>
+            <PublicLayout
+              giveModalOpen={giveModalOpen}
+              setGiveModalOpen={setGiveModalOpen}
+              fontScaleClass={fontScaleClass}
+            />
           }
-        />
+        >
+          <Route
+            path="/"
+            element={
+              <HomePage
+                events={events}
+                announcements={announcements}
+                loading={!dataHydrated}
+                onOpenGiveModal={() => setGiveModalOpen(true)}
+              />
+            }
+          />
+          <Route path="/about" element={<AboutPage />} />
+          <Route
+            path="/events"
+            element={<EventsPage events={events} loading={!dataHydrated} />}
+          />
+          <Route path="/verse" element={<VersePage />} />
+          <Route
+            path="/prayer"
+            element={<PrayerPage prayers={prayers} onSubmitPrayer={handleAddPrayer} />}
+          />
+          <Route
+            path="/contact"
+            element={<ContactPage onRegisterAttendee={handleRegisterAttendee} />}
+          />
+
+          {/* Fallback: unknown paths go home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
