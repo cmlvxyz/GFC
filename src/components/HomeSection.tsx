@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Clock, ArrowRight, CalendarDays, ChevronDown } from 'lucide-react';
+import type { SiteSetting } from '../types';
 
 interface HomeSectionProps {
   onOpenGiveModal: () => void;
+  siteSettings?: SiteSetting[];
 }
 
-export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => {
+export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal, siteSettings = [] }) => {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [serviceOpen, setServiceOpen] = useState(false);
+
+  const settingText = (key: string, fallback: string) => {
+    const s = siteSettings.find(x => x.key === key);
+    return s?.value || fallback;
+  };
 
   useEffect(() => {
     const setDays = (d: number) => setTimeLeft(prev => ({ ...prev, days: d }));
@@ -63,15 +70,15 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
         {/* Background image */}
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2000&q=80"
+            src={settingText('heroImage', 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2000&q=80')}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover animate-kenburns"
           />
         </div>
         {/* Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f1a2e]/95 via-[#0f1a2e]/80 to-[#0f1a2e]/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1a2e] via-transparent to-[#0f1a2e]/40" />
+        <div className="absolute inset-0 bg-linear-to-br from-[#0f1a2e]/95 via-[#0f1a2e]/80 to-[#0f1a2e]/55" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0f1a2e] via-transparent to-[#0f1a2e]/40" />
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-32 pb-60 sm:pb-48 text-center">
@@ -88,9 +95,9 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onOpenGiveModal }) => 
               className="text-4xl sm:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-[1.05] animate-fadeUp"
               style={{ animationDelay: '0.25s' }}
             >
-              Your home in faith,
+              {settingText('heroHeading1', 'Your home in faith,')}
               <br />
-              <span className="italic text-indigo-400">hope and love.</span>
+              <span className="italic text-indigo-400">{settingText('heroHeading2', 'hope and love.')}</span>
             </h1>
 
             {/* Primary CTAs */}

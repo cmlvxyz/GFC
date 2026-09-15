@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChurchEvent, Announcement } from '../types';
+import { ChurchEvent, Announcement, SiteSetting } from '../types';
 import {
   Users, CalendarDays, BookOpen, Heart, ArrowRight, ArrowUpRight,
   MapPin, Clock, Megaphone
@@ -12,6 +12,7 @@ interface HomePageProps {
   events: ChurchEvent[];
   announcements: Announcement[];
   loading?: boolean;
+  siteSettings?: SiteSetting[];
   onOpenGiveModal: () => void;
 }
 
@@ -49,41 +50,62 @@ const journeyTiles = [
 const eventPhoto = (ev: ChurchEvent): string =>
   ev.image || 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=900&q=80';
 
-export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loading, onOpenGiveModal }) => {
+export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loading, siteSettings = [], onOpenGiveModal }) => {
   const todayVerse = getTodayVerse();
   const featured = events.filter(ev => ev.date).slice(0, 3);
   const visibleAnnouncements = announcements.slice(0, 3);
 
+  const marqueeRef = useRef<HTMLDivElement>(null);
+
+  const pauseMarquee = () => {
+    if (marqueeRef.current) {
+      marqueeRef.current.style.animationPlayState = 'paused';
+    }
+  };
+
+  const resumeMarquee = () => {
+    if (marqueeRef.current) {
+      marqueeRef.current.style.animationPlayState = 'running';
+    }
+  };
+
+  const settingText = (key: string, fallback: string) => {
+    const s = siteSettings.find(x => x.key === key);
+    return s?.value || fallback;
+  };
+
   return (
     <main>
-      <HomeSection onOpenGiveModal={onOpenGiveModal} />
+      <HomeSection onOpenGiveModal={onOpenGiveModal} siteSettings={siteSettings} />
 
-      {/* ============ WELCOME ============ */}
+      {/* ============ WELCOME MARQUEE ============ */}
       <section className="bg-white overflow-hidden">
-        <div className="py-16 sm:py-20 overflow-hidden whitespace-nowrap group">
-          <div className="flex w-max animate-marquee-left group-hover:[animation-play-state:paused]">
+        <div
+          className="py-16 sm:py-20 overflow-hidden whitespace-nowrap"
+          onMouseEnter={pauseMarquee}
+          onMouseLeave={resumeMarquee}
+        >
+          <div
+            ref={marqueeRef}
+            className="flex w-max animate-marquee-left items-center"
+          >
             {[0, 4].map(group => (
-              <div key={group} className="flex shrink-0" aria-hidden={group === 1}>
-                
-                {/* SOLID VERSION (Itim na buo) */}
-                <div className="shrink-0 px-6 sm:px-10 flex flex-col justify-center items-center space-y-2">
-                  <span className="block font-heading font-black leading-none tracking-tighter text-6xl sm:text-4xl lg:text-4xl text-black uppercase">
-                    WELCOME
-                  </span>
-                  <span className="block font-heading font-bold leading-none tracking-tight text-xl sm:text-4xl lg:text-4xl text-black uppercase">
-                    Gospel Fellowship Church
-                  </span>
-                </div>
+              <div key={group} className="flex shrink-0 items-center" aria-hidden={group === 1}>
 
-                {/* OUTLINE VERSION - manipis na stroke */}
-                <div className="shrink-0 px-6 sm:px-10 flex flex-col justify-center items-center space-y-2">
-                  <span className="block font-heading font-normal leading-none tracking-tighter text-6xl sm:text-4xl lg:text-4xl text-transparent uppercase [-webkit-text-stroke:1px_black]">
-                    WELCOME
-                  </span>
-                  <span className="block font-heading font-normal leading-none tracking-tight text-xl sm:text-4xl lg:text-4xl text-transparent uppercase [-webkit-text-stroke:1px_black]">
-                    Gospel Fellowship Church
-                  </span>
-                </div>
+                {/* SOLID VERSION */}
+                <img
+                  src="/solid.png"
+                  alt="Welcome to Gospel Fellowship Church"
+                  className="shrink-0 h-20 sm:h-28 lg:h-32 w-auto px-10 sm:px-16"
+                />
+
+                {/* OUTLINE VERSION */}
+                <img
+                  src="/outline.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="shrink-0 h-20 sm:h-28 lg:h-32 w-auto px-10 sm:px-16"
+                />
 
               </div>
             ))}
@@ -269,11 +291,10 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
                 We're praying with you
               </span>
               <h2 className="text-3xl sm:text-4xl font-serif text-white tracking-tight leading-tight">
-                Facing a burden? <span className="italic text-indigo-400">Tell us.</span>
+                {settingText('prayerTitle1', 'Facing a burden?')} <span className="italic text-indigo-400">{settingText('prayerTitle2', 'Tell us.')}</span>
               </h2>
               <p className="text-white/75 text-sm sm:text-base leading-relaxed">
-                Share a prayer request with our church family. No request is too small
-                or too big for the Lord.
+                {settingText('prayerText', 'Share a prayer request with our church family. No request is too small or too big for the Lord.')}
               </p>
             </div>
             <Link
@@ -299,8 +320,7 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
               <h3 className="font-serif text-xl text-[#0f172a]">Where to find us</h3>
             </div>
             <p className="text-sm text-slate-500 leading-relaxed">
-              008 National Road SF. 2 Purok 1, Limay, Bataan. Come as you are — we
-              can't wait to meet you.
+              {settingText('visitAddress', '008 National Road SF. 2 Purok 1, Limay, Bataan. Come as you are — we can\'t wait to meet you.')}
             </p>
             <Link
               to="/contact"
@@ -319,8 +339,7 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
               <h3 className="font-serif text-xl">Bless the church</h3>
             </div>
             <p className="text-sm text-white/70 leading-relaxed">
-              Your tithes and offerings help us continue sharing the Gospel in
-              Limay and beyond.
+              {settingText('giveBlurb', 'Your tithes and offerings help us continue sharing the Gospel in Limay and beyond.')}
             </p>
             <button
               onClick={onOpenGiveModal}

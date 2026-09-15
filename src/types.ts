@@ -113,4 +113,44 @@ export interface Song {
   link: string;
 }
 
+export interface AboutImage {
+  id: string;
+  image: string;
+  caption?: string;
+}
+
+export interface AboutInfo {
+  id: string;
+  introHeading?: string;
+  introParagraph?: string;
+  stats?: string;
+  scheduleLabel?: string;
+  scheduleTime?: string;
+  slogan?: string;
+  missionQuote?: string;
+  visionTitle?: string;
+  visionText?: string;
+  communityText?: string;
+}
+
+export interface Verse {
+  id?: string;
+  text: string;
+  ref: string;
+}
+
+export interface GiveInfo {
+  id: string;
+  gcashNumber?: string;
+  gcashName?: string;
+  bdoNumber?: string;
+  bdoName?: string;
+}
+
+export interface SiteSetting {
+  id?: string;
+  key: string;
+  value: string;
+}
+
 export type TextSizeLevel = 'normal' | 'large' | 'extralarge';

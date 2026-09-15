@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { BookOpen, Copy, Check, CalendarDays } from 'lucide-react';
 import { getTodayVerse, getMoreVerses, todayLabel } from '../utils/verseOfDay';
+import { Verse } from '../types';
 
 interface SermonsSectionProps {
-  sermons?: unknown[];
-  onAddSermon?: (newSermon: unknown) => void;
+  verses?: Verse[];
 }
 
-export const SermonsSection: React.FC<SermonsSectionProps> = () => {
+export const SermonsSection: React.FC<SermonsSectionProps> = ({ verses = [] }) => {
   const [copied, setCopied] = useState(false);
 
-  const todayVerse = getTodayVerse();
-  const moreVerses = getMoreVerses(3);
+  const hasAdminVerses = verses.length > 0;
+  const todayVerse = hasAdminVerses ? verses[0] : getTodayVerse();
+  const moreVerses = hasAdminVerses && verses.length > 1
+    ? verses.slice(1, 4)
+    : getMoreVerses(3);
 
   const copyVerse = async () => {
     try {

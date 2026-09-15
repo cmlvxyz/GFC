@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ChurchEvent, Sermon, PrayerRequest, Attendee, TextSizeLevel, Member, Announcement, Testimonial } from './types';
+import { ChurchEvent, Sermon, PrayerRequest, Attendee, TextSizeLevel, Member, Announcement, Testimonial, AboutImage, AboutInfo, Ministry, Pastor, Song, Verse, GiveInfo, SiteSetting } from './types';
 import {
   DEFAULT_EVENTS,
   DEFAULT_SERMONS,
   DEFAULT_PRAYERS,
   DEFAULT_ATTENDEES,
   DEFAULT_ANNOUNCEMENTS,
-  DEFAULT_TESTIMONIALS
+  DEFAULT_TESTIMONIALS,
+  DEFAULT_MINISTRIES,
+  DEFAULT_PASTORS,
+  DEFAULT_SONGS
 } from './data/churchData';
 
 import { PublicLayout } from './components/PublicLayout';
@@ -39,6 +42,14 @@ interface CachedContent {
   members: Member[];
   announcements: Announcement[];
   testimonials: Testimonial[];
+  aboutImages?: AboutImage[];
+  ministries?: Ministry[];
+  pastors?: Pastor[];
+  songs?: Song[];
+  aboutInfo?: AboutInfo[];
+  verses?: Verse[];
+  giveInfo?: GiveInfo[];
+  siteSettings?: SiteSetting[];
 }
 
 const CACHE_KEY = 'gfc_content_cache_v2';
@@ -82,6 +93,14 @@ export default function App() {
   const [members, setMembers] = useState<Member[]>(initialCache?.members || []);
   const [announcements, setAnnouncements] = useState<Announcement[]>(initialCache?.announcements?.length ? initialCache.announcements : DEFAULT_ANNOUNCEMENTS);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialCache?.testimonials?.length ? initialCache.testimonials : DEFAULT_TESTIMONIALS);
+  const [aboutImages, setAboutImages] = useState<AboutImage[]>(initialCache?.aboutImages || []);
+  const [ministries, setMinistries] = useState<Ministry[]>(initialCache?.ministries?.length ? initialCache.ministries : DEFAULT_MINISTRIES);
+  const [pastors, setPastors] = useState<Pastor[]>(initialCache?.pastors?.length ? initialCache.pastors : DEFAULT_PASTORS);
+  const [songs, setSongs] = useState<Song[]>(initialCache?.songs?.length ? initialCache.songs : DEFAULT_SONGS);
+  const [aboutInfo, setAboutInfo] = useState<AboutInfo[]>(initialCache?.aboutInfo || []);
+  const [verses, setVerses] = useState<Verse[]>(initialCache?.verses || []);
+  const [giveInfo, setGiveInfo] = useState<GiveInfo[]>(initialCache?.giveInfo || []);
+  const [siteSettings, setSiteSettings] = useState<SiteSetting[]>(initialCache?.siteSettings || []);
 
   /*
    * True once we have something to render (cached data on refresh, or the
@@ -121,6 +140,14 @@ export default function App() {
       setMembers([]);
       setAnnouncements(DEFAULT_ANNOUNCEMENTS);
       setTestimonials(DEFAULT_TESTIMONIALS);
+      setAboutImages([]);
+      setMinistries(DEFAULT_MINISTRIES);
+      setPastors(DEFAULT_PASTORS);
+      setSongs(DEFAULT_SONGS);
+      setAboutInfo([]);
+      setVerses([]);
+      setGiveInfo([]);
+      setSiteSettings([]);
     };
 
     const refreshFromRemote = async () => {
@@ -155,7 +182,15 @@ export default function App() {
           attendees: remote.attendees.length > 0 ? remote.attendees : DEFAULT_ATTENDEES,
           members: remote.members || [],
           announcements: remote.announcements.length > 0 ? remote.announcements : DEFAULT_ANNOUNCEMENTS,
-          testimonials: remote.testimonials.length > 0 ? remote.testimonials : DEFAULT_TESTIMONIALS
+          testimonials: remote.testimonials.length > 0 ? remote.testimonials : DEFAULT_TESTIMONIALS,
+          aboutImages: remote.aboutImages || [],
+          ministries: remote.ministries?.length ? remote.ministries : DEFAULT_MINISTRIES,
+          pastors: remote.pastors?.length ? remote.pastors : DEFAULT_PASTORS,
+          songs: remote.songs?.length ? remote.songs : DEFAULT_SONGS,
+          aboutInfo: remote.aboutInfo || [],
+          verses: remote.verses || [],
+          giveInfo: remote.giveInfo || [],
+          siteSettings: remote.siteSettings || []
         };
 
         setEvents(effective.events);
@@ -165,6 +200,14 @@ export default function App() {
         setMembers(effective.members);
         setAnnouncements(effective.announcements);
         setTestimonials(effective.testimonials);
+        setAboutImages(effective.aboutImages);
+        setMinistries(effective.ministries);
+        setPastors(effective.pastors);
+        setSongs(effective.songs);
+        setAboutInfo(effective.aboutInfo);
+        setVerses(effective.verses);
+        setGiveInfo(effective.giveInfo);
+        setSiteSettings(effective.siteSettings);
 
         // Remember the last good data so the next refresh paints instantly.
         saveCachedContent(effective);
@@ -320,6 +363,13 @@ export default function App() {
     setMembers([]);
     setAnnouncements(DEFAULT_ANNOUNCEMENTS);
     setTestimonials(DEFAULT_TESTIMONIALS);
+    setAboutImages([]);
+    setMinistries(DEFAULT_MINISTRIES);
+    setPastors(DEFAULT_PASTORS);
+    setSongs(DEFAULT_SONGS);
+    setAboutInfo([]);
+    setVerses([]);
+    setGiveInfo([]);
     window.location.reload();
   };
 
@@ -344,15 +394,16 @@ export default function App() {
         />
 
         {/* Public Website Routes - each navbar item is its own page */}
-        <Route
-          element={
-            <PublicLayout
-              giveModalOpen={giveModalOpen}
-              setGiveModalOpen={setGiveModalOpen}
-              fontScaleClass={fontScaleClass}
-            />
-          }
-        >
+<Route
+            element={
+              <PublicLayout
+                giveModalOpen={giveModalOpen}
+                setGiveModalOpen={setGiveModalOpen}
+                fontScaleClass={fontScaleClass}
+                giveInfo={giveInfo}
+              />
+            }
+          >
           <Route
             path="/"
             element={
@@ -360,16 +411,25 @@ export default function App() {
                 events={events}
                 announcements={announcements}
                 loading={!dataHydrated}
+                siteSettings={siteSettings}
                 onOpenGiveModal={() => setGiveModalOpen(true)}
               />
             }
           />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/about" element={
+            <AboutPage
+              aboutImages={aboutImages}
+              ministries={ministries}
+              pastors={pastors}
+              songs={songs}
+              aboutInfo={aboutInfo}
+            />
+          } />
           <Route
             path="/events"
             element={<EventsPage events={events} loading={!dataHydrated} />}
           />
-          <Route path="/verse" element={<VersePage />} />
+          <Route path="/verse" element={<VersePage verses={verses} />} />
           <Route
             path="/prayer"
             element={<PrayerPage prayers={prayers} onSubmitPrayer={handleAddPrayer} />}

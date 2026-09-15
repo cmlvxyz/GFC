@@ -3,17 +3,20 @@ import { Outlet } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { GiveModal } from './GiveModal';
+import { GiveInfo } from '../types';
 
 interface PublicLayoutProps {
   giveModalOpen: boolean;
   setGiveModalOpen: (show: boolean) => void;
   fontScaleClass?: string;
+  giveInfo?: GiveInfo[];
 }
 
 export const PublicLayout: React.FC<PublicLayoutProps> = ({
   giveModalOpen,
   setGiveModalOpen,
-  fontScaleClass
+  fontScaleClass,
+  giveInfo
 }) => {
   return (
     <>
@@ -22,7 +25,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
         <Outlet />
         <Footer />
       </div>
-      <GiveModal open={giveModalOpen} onClose={() => setGiveModalOpen(false)} />
+      <GiveModal open={giveModalOpen} onClose={() => setGiveModalOpen(false)} giveInfo={giveInfo} />
     </>
   );
 };

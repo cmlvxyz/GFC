@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import { X, Heart } from 'lucide-react';
+import { GiveInfo } from '../types';
 
 interface GiveModalProps {
   open: boolean;
   onClose: () => void;
+  giveInfo?: GiveInfo[];
 }
 
-export const GiveModal: React.FC<GiveModalProps> = ({ open, onClose }) => {
+export const GiveModal: React.FC<GiveModalProps> = ({ open, onClose, giveInfo = [] }) => {
+  const info = giveInfo[0];
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -52,19 +55,19 @@ export const GiveModal: React.FC<GiveModalProps> = ({ open, onClose }) => {
           <div className="p-4 rounded-2xl border border-slate-200 space-y-1">
             <div className="font-bold text-[#0f172a]">GCash Account</div>
             <div className="text-black font-mono font-bold text-base tracking-wider">
-              0912-345-6789
+              {info?.gcashNumber || '0912-345-6789'}
             </div>
             <div className="text-slate-500">
-              Account Name: Gospel Fellowship Church / Pastor Zaldy B.
+              {info?.gcashName || 'Account Name: Gospel Fellowship Church / Pastor Zaldy B.'}
             </div>
           </div>
 
           <div className="p-4 rounded-2xl border border-slate-200 space-y-1">
             <div className="font-bold text-[#0f172a]">Bank Transfer / BDO</div>
             <div className="text-black font-mono font-bold text-base tracking-wider">
-              0012-3456-7890
+              {info?.bdoNumber || '0012-3456-7890'}
             </div>
-            <div className="text-slate-500">Gospel Fellowship Church Limay</div>
+            <div className="text-slate-500">{info?.bdoName || 'Gospel Fellowship Church Limay'}</div>
           </div>
         </div>
 
