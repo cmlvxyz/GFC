@@ -165,40 +165,36 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
       </section>
 
       {/* ============ FEATURED EVENTS ============ */}
-      <section className="bg-indigo-50/50">
-        <div className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div className="space-y-3">
-            <span className="text-[11px] font-bold uppercase tracking-[0.35em] text-indigo-600">
-              Gatherings
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#0f172a] tracking-tight">
-              Upcoming events
-            </h2>
+      <section className="bg-white">
+        {/* Header — may padding */}
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-20 pb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3">
+              <span className="text-[11px] font-bold uppercase tracking-[0.35em] text-indigo-600">
+                Gatherings
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-serif text-[#0f172a] tracking-tight">
+                Upcoming events
+              </h2>
+            </div>
+            <Link
+              to="/events"
+              className="group inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+            >
+              View All Events
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </div>
-          <Link
-            to="/events"
-            className="group inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
-          >
-            View All Events
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Grid — FULL WIDTH, walang padding, walang gap */}
+        <div className="w-full grid grid-cols-3 gap-0">
           {loading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-slate-200 overflow-hidden animate-pulse">
-                <div className="w-full h-48 bg-slate-200" />
-                <div className="p-6 space-y-3">
-                  <div className="h-3 w-1/3 bg-slate-200 rounded-full" />
-                  <div className="h-5 w-2/3 bg-slate-200 rounded-full" />
-                  <div className="h-3 w-full bg-slate-200 rounded-full" />
-                </div>
-              </div>
+              <div key={i} className="relative aspect-[3/4] bg-slate-200 animate-pulse" />
             ))
           ) : featured.length === 0 ? (
-            <div className="sm:col-span-2 lg:col-span-3 text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <div className="col-span-3 text-center py-12">
               <p className="text-slate-500">No upcoming events yet. Check back soon.</p>
             </div>
           ) : (
@@ -206,34 +202,46 @@ export const HomePage: React.FC<HomePageProps> = ({ events, announcements, loadi
               <Link
                 key={ev.id}
                 to="/events"
-                className="group bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_70px_-28px_rgba(15,23,42,0.25)] hover:border-indigo-300"
+                className="group relative aspect-[3/4] overflow-hidden block"
               >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={eventPhoto(ev)}
-                    alt={ev.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/60 via-transparent to-transparent opacity-70" />
-                  <span className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3.5 py-1.5 rounded-full text-xs font-bold text-[#0f172a] shadow-sm">
-                    {ev.tag}
-                  </span>
-                </div>
-                <div className="p-6 space-y-3">
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 uppercase tracking-widest">
-                    <Clock className="w-3.5 h-3.5" />
-                    {ev.date}
+                {/* Background image */}
+                <img
+                  src={eventPhoto(ev)}
+                  alt={ev.title}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8 lg:p-12">
+                  {/* Tag sa itaas-kanan */}
+                  <div className="flex justify-end">
+                    <span className="bg-white/95 backdrop-blur px-3.5 py-1.5 rounded-full text-xs font-bold text-[#0f172a] shadow-sm">
+                      {ev.tag}
+                    </span>
                   </div>
-                  <h3 className="font-serif text-xl text-[#0f172a] group-hover:text-indigo-700 transition-colors">
-                    {ev.title}
-                  </h3>
-                  <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{ev.description}</p>
+
+                  {/* Title sa gitna */}
+                  <div className="text-center">
+                    <h3 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white tracking-tight leading-tight drop-shadow-lg">
+                      {ev.title}
+                    </h3>
+                  </div>
+
+                  {/* Learn More sa ibaba */}
+                  <div className="flex justify-center">
+                    <span className="inline-flex items-center gap-2 text-white font-bold text-sm sm:text-base lg:text-lg group-hover:gap-3 transition-all duration-300">
+                      See more
+                      <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))
           )}
-        </div>
         </div>
       </section>
 
